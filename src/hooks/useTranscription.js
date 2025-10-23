@@ -13,6 +13,7 @@ export const useTranscription = () => {
   const [wordCount, setWordCount] = useState(0);
   const [charCount, setCharCount] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [transcriptionProgress, setTranscriptionProgress] = useState(0);
 
   useEffect(() => {
     if (transcription) {
@@ -48,12 +49,33 @@ export const useTranscription = () => {
       const mockAudioFileId = 'audio-' + Date.now();
       setAudioFileId(mockAudioFileId);
 
-      // Transcrever
+      // Transcrever com progresso simulado
       setIsTranscribing(true);
+      setTranscriptionProgress(0);
+
+      // Simular progresso da transcrição
+      const progressInterval = setInterval(() => {
+        setTranscriptionProgress(prev => {
+          if (prev >= 90) {
+            clearInterval(progressInterval);
+            return 90; // Parar em 90% até terminar
+          }
+          return prev + Math.random() * 15;
+        });
+      }, 300);
+
       const transcribedText = await transcribeAudio(file);
+
+      // Completar progresso
+      clearInterval(progressInterval);
+      setTranscriptionProgress(100);
+
+      // Pequeno delay para mostrar 100%
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       setTranscription(transcribedText);
       setIsTranscribing(false);
+      setTranscriptionProgress(0);
 
       return {
         success: true,
@@ -63,6 +85,7 @@ export const useTranscription = () => {
     } catch (err) {
       setIsUploading(false);
       setIsTranscribing(false);
+      setTranscriptionProgress(0);
       throw err;
     }
   };
@@ -104,6 +127,7 @@ export const useTranscription = () => {
     wordCount,
     charCount,
     isDragging,
+    transcriptionProgress,
     validateAndSetFile,
     handleUploadAndTranscribe,
     handleNewTranscription,

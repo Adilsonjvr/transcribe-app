@@ -8,3 +8,6 @@ export { FileUpload } from './FileUpload';
 export { TranscriptionResult } from './TranscriptionResult';
 export { ProfileView } from './ProfileView';
 export { Footer } from './Footer';
+export { AudioPreview } from './AudioPreview';
+export { TranscriptionSkeleton } from './TranscriptionSkeleton';
+export { DarkModeToggle } from './DarkModeToggle';

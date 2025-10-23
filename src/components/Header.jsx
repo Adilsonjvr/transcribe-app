@@ -1,7 +1,8 @@
 import React from 'react';
 import { User, Zap, Home } from 'lucide-react';
+import { DarkModeToggle } from './DarkModeToggle';
 
-export const Header = ({ user, currentView, onViewChange, onAuthClick, onLogout }) => {
+export const Header = ({ user, currentView, onViewChange, onAuthClick, onLogout, isDarkMode, onToggleDarkMode }) => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-xl border-b border-white/10">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -44,27 +45,31 @@ export const Header = ({ user, currentView, onViewChange, onAuthClick, onLogout 
           )}
         </div>
 
-        {user ? (
-          <div className="flex items-center gap-4">
-            <div className="hidden sm:flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full border border-white/20">
-              <User className="w-4 h-4" />
-              <span className="text-sm">{user.email}</span>
-            </div>
+        <div className="flex items-center gap-4">
+          <DarkModeToggle isDarkMode={isDarkMode} onToggle={onToggleDarkMode} />
+
+          {user ? (
+            <>
+              <div className="hidden sm:flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full border border-white/20">
+                <User className="w-4 h-4" />
+                <span className="text-sm">{user.email}</span>
+              </div>
+              <button
+                onClick={onLogout}
+                className="px-4 py-2 text-sm hover:bg-white/10 rounded-full transition-all"
+              >
+                Sair
+              </button>
+            </>
+          ) : (
             <button
-              onClick={onLogout}
-              className="px-4 py-2 text-sm hover:bg-white/10 rounded-full transition-all"
+              onClick={onAuthClick}
+              className="px-6 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-600 transition-all"
             >
-              Sair
+              Entrar
             </button>
-          </div>
-        ) : (
-          <button
-            onClick={onAuthClick}
-            className="px-6 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-600 transition-all"
-          >
-            Entrar
-          </button>
-        )}
+          )}
+        </div>
       </div>
     </header>
   );

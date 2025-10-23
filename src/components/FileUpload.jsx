@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { Upload, FileAudio, Loader2, Zap } from 'lucide-react';
 import { FILE_CONFIG } from '../config/constants';
 import { formatFileSize } from '../utils/formatters';
+import { AudioPreview } from './AudioPreview';
 
 export const FileUpload = ({
   file,
@@ -61,18 +62,22 @@ export const FileUpload = ({
         </button>
 
         {file && (
-          <div className="mt-8 p-6 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <FileAudio className="w-8 h-8 text-purple-400" />
-                <div className="text-left">
-                  <p className="font-medium">{file.name}</p>
-                  <p className="text-sm text-white/50">
-                    {formatFileSize(file.size)} MB
-                  </p>
+          <div className="mt-8 space-y-4">
+            {/* Audio Preview */}
+            <AudioPreview file={file} />
+
+            <div className="p-6 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <FileAudio className="w-8 h-8 text-purple-400" />
+                  <div className="text-left">
+                    <p className="font-medium">{file.name}</p>
+                    <p className="text-sm text-white/50">
+                      {formatFileSize(file.size)} MB
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
 
             {isUploading && (
               <div className="mb-4">
@@ -89,30 +94,31 @@ export const FileUpload = ({
               </div>
             )}
 
-            {isTranscribing && (
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <Loader2 className="w-5 h-5 animate-spin text-purple-400" />
-                <span className="font-medium">Transcrevendo áudio...</span>
-              </div>
-            )}
-
-            <button
-              onClick={onUploadAndTranscribe}
-              disabled={isUploading || isTranscribing}
-              className="w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold py-4 rounded-full hover:from-purple-600 hover:to-blue-600 disabled:from-gray-600 disabled:to-gray-600 disabled:text-white/50 transition-all flex items-center justify-center gap-2"
-            >
-              {isUploading || isTranscribing ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  {isUploading ? 'Enviando...' : 'Transcrevendo...'}
-                </>
-              ) : (
-                <>
-                  <Zap className="w-5 h-5" />
-                  Transcrever Agora
-                </>
+              {isTranscribing && (
+                <div className="flex items-center justify-center gap-3 mb-4">
+                  <Loader2 className="w-5 h-5 animate-spin text-purple-400" />
+                  <span className="font-medium">Transcrevendo áudio...</span>
+                </div>
               )}
-            </button>
+
+              <button
+                onClick={onUploadAndTranscribe}
+                disabled={isUploading || isTranscribing}
+                className="w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold py-4 rounded-full hover:from-purple-600 hover:to-blue-600 disabled:from-gray-600 disabled:to-gray-600 disabled:text-white/50 transition-all flex items-center justify-center gap-2"
+              >
+                {isUploading || isTranscribing ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    {isUploading ? 'Enviando...' : 'Transcrevendo...'}
+                  </>
+                ) : (
+                  <>
+                    <Zap className="w-5 h-5" />
+                    Transcrever Agora
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         )}
       </div>

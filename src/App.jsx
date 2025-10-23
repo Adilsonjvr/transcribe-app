@@ -9,9 +9,10 @@ import {
   FileUpload,
   TranscriptionResult,
   ProfileView,
-  Footer
+  Footer,
+  TranscriptionSkeleton
 } from './components';
-import { useAuth, useTranscription, useHistory, useToast } from './hooks';
+import { useAuth, useTranscription, useHistory, useToast, useDarkMode } from './hooks';
 import { copyToClipboard, downloadFile, createTranscriptionJSON } from './utils/fileUtils';
 
 const App = () => {
@@ -24,6 +25,7 @@ const App = () => {
   const transcription = useTranscription();
   const history = useHistory(auth.user);
   const toast = useToast();
+  const darkMode = useDarkMode();
 
   // Detectar recovery token na URL (quando usuário clica no link de reset de senha)
   useEffect(() => {
@@ -144,7 +146,7 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 dark:from-gray-900 dark:via-gray-800 dark:to-black text-white relative overflow-hidden transition-colors duration-500">
       <AnimatedBackground />
 
       <Header
@@ -153,6 +155,8 @@ const App = () => {
         onViewChange={setCurrentView}
         onAuthClick={() => auth.setShowAuthModal(true)}
         onLogout={handleLogout}
+        isDarkMode={darkMode.isDarkMode}
+        onToggleDarkMode={darkMode.toggleDarkMode}
       />
 
       <ToastMessage message={toast.error} type="error" />
@@ -199,7 +203,7 @@ const App = () => {
             <>
               {!transcription.transcription && !transcription.file && <HeroSection />}
 
-              {!transcription.transcription && (
+              {!transcription.transcription && !transcription.isTranscribing && (
                 <FileUpload
                   file={transcription.file}
                   isDragging={transcription.isDragging}
@@ -212,6 +216,10 @@ const App = () => {
                   onDrop={transcription.handleDrop}
                   onUploadAndTranscribe={handleUploadAndTranscribe}
                 />
+              )}
+
+              {transcription.isTranscribing && !transcription.transcription && (
+                <TranscriptionSkeleton progress={Math.round(transcription.transcriptionProgress)} />
               )}
 
               {transcription.transcription && (
