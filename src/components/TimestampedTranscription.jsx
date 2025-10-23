@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Play, Pause, Copy, Download, RefreshCw, Clock } from 'lucide-react';
+import { Play, Pause, Copy, Download, RefreshCw, Clock, User } from 'lucide-react';
 
 export const TimestampedTranscription = ({
   segments = [],
@@ -74,6 +74,15 @@ export const TimestampedTranscription = ({
 
   const wordCount = segments.reduce((acc, seg) => acc + seg.text.split(' ').length, 0);
   const charCount = segments.reduce((acc, seg) => acc + seg.text.length, 0);
+  const hasSpeakers = segments.some(seg => seg.speaker);
+
+  // Obter cores únicas para cada speaker
+  const speakerColors = {
+    'Speaker 1': 'from-blue-500 to-cyan-500',
+    'Speaker 2': 'from-purple-500 to-pink-500',
+    'Speaker 3': 'from-green-500 to-emerald-500',
+    'Speaker 4': 'from-orange-500 to-red-500',
+  };
 
   // Encontrar segmento atual baseado no tempo
   const currentSegmentIndex = segments.findIndex(
@@ -153,16 +162,27 @@ export const TimestampedTranscription = ({
                 onClick={() => jumpToTime(segment.start)}
               >
                 <div className="flex items-start gap-3">
-                  <button
-                    className="flex-shrink-0 flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full text-sm font-mono hover:bg-white/20 transition-all"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      jumpToTime(segment.start);
-                    }}
-                  >
-                    <Clock className="w-3 h-3 text-purple-400" />
-                    {formatTime(segment.start)}
-                  </button>
+                  <div className="flex flex-col gap-2">
+                    <button
+                      className="flex-shrink-0 flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full text-sm font-mono hover:bg-white/20 transition-all"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        jumpToTime(segment.start);
+                      }}
+                    >
+                      <Clock className="w-3 h-3 text-purple-400" />
+                      {formatTime(segment.start)}
+                    </button>
+
+                    {/* Badge do Speaker */}
+                    {hasSpeakers && segment.speaker && (
+                      <div className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r ${speakerColors[segment.speaker] || 'from-gray-500 to-gray-600'}`}>
+                        <User className="w-3 h-3" />
+                        {segment.speaker}
+                      </div>
+                    )}
+                  </div>
+
                   <p className="flex-1 text-lg leading-relaxed">
                     {segment.text}
                   </p>

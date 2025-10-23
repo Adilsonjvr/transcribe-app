@@ -12,7 +12,8 @@ import {
   Footer,
   TranscriptionSkeleton,
   LanguageSelector,
-  TimestampedTranscription
+  TimestampedTranscription,
+  DiarizationToggle
 } from './components';
 import { useAuth, useTranscription, useHistory, useToast, useDarkMode } from './hooks';
 import { copyToClipboard, downloadFile, createTranscriptionJSON } from './utils/fileUtils';
@@ -148,7 +149,8 @@ const App = () => {
         if (transcription.segments && transcription.segments.length > 0) {
           content = transcription.segments.map((seg) => {
             const timestamp = formatTimestamp(seg.start);
-            return `[${timestamp}] ${seg.text}`;
+            const speaker = seg.speaker ? `${seg.speaker}: ` : '';
+            return `[${timestamp}] ${speaker}${seg.text}`;
           }).join('\n\n');
         }
       }
@@ -234,10 +236,19 @@ const App = () => {
               {!transcription.transcription && !transcription.isTranscribing && (
                 <>
                   {/* Seletor de Idioma */}
-                  <div className="mb-8">
+                  <div className="mb-6">
                     <LanguageSelector
                       selectedLanguage={transcription.language}
                       onLanguageChange={transcription.setLanguage}
+                      disabled={transcription.isUploading || transcription.isTranscribing}
+                    />
+                  </div>
+
+                  {/* Toggle de Diarization (Speaker Identification) */}
+                  <div className="mb-8">
+                    <DiarizationToggle
+                      enabled={transcription.diarizationEnabled}
+                      onToggle={transcription.setDiarizationEnabled}
                       disabled={transcription.isUploading || transcription.isTranscribing}
                     />
                   </div>

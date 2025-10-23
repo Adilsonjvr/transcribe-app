@@ -12,6 +12,7 @@ export const useTranscription = () => {
   const [segments, setSegments] = useState([]); // Novo: segmentos com timestamps
   const [language, setLanguage] = useState('auto'); // Novo: idioma selecionado
   const [detectedLanguage, setDetectedLanguage] = useState(null); // Novo: idioma detectado
+  const [diarizationEnabled, setDiarizationEnabled] = useState(false); // Novo: ativar identificação de speakers
   const [audioFileId, setAudioFileId] = useState(null);
   const [wordCount, setWordCount] = useState(0);
   const [charCount, setCharCount] = useState(0);
@@ -67,7 +68,7 @@ export const useTranscription = () => {
         });
       }, 300);
 
-      const result = await transcribeAudio(file, language);
+      const result = await transcribeAudio(file, language, diarizationEnabled);
 
       // Completar progresso
       clearInterval(progressInterval);
@@ -138,6 +139,8 @@ export const useTranscription = () => {
     language,
     setLanguage,
     detectedLanguage,
+    diarizationEnabled,
+    setDiarizationEnabled,
     audioFileId,
     wordCount,
     charCount,
