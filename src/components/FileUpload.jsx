@@ -79,20 +79,20 @@ export const FileUpload = ({
                 </div>
               </div>
 
-            {isUploading && (
-              <div className="mb-4">
-                <div className="flex justify-between mb-2">
-                  <span className="text-sm">Enviando...</span>
-                  <span className="text-sm font-medium">{uploadProgress}%</span>
+              {isUploading && (
+                <div className="mb-4">
+                  <div className="flex justify-between mb-2">
+                    <span className="text-sm">Enviando...</span>
+                    <span className="text-sm font-medium">{uploadProgress}%</span>
+                  </div>
+                  <div className="w-full h-1 bg-white/20 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-purple-500 to-blue-500 transition-all duration-300"
+                      style={{ width: `${uploadProgress}%` }}
+                    />
+                  </div>
                 </div>
-                <div className="w-full h-1 bg-white/20 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-purple-500 to-blue-500 transition-all duration-300"
-                    style={{ width: `${uploadProgress}%` }}
-                  />
-                </div>
-              </div>
-            )}
+              )}
 
               {isTranscribing && (
                 <div className="flex items-center justify-center gap-3 mb-4">
