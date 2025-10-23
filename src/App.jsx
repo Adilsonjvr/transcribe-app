@@ -17,6 +17,7 @@ import { copyToClipboard, downloadFile, createTranscriptionJSON } from './utils/
 const App = () => {
   const [currentView, setCurrentView] = useState('home');
   const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
+  const [authError, setAuthError] = useState('');
 
   // Custom Hooks
   const auth = useAuth();
@@ -40,6 +41,7 @@ const App = () => {
   // Auth handlers
   const handleAuth = async () => {
     try {
+      setAuthError(''); // Limpar erro anterior
       console.log('[App] Iniciando autenticação...');
       const result = await auth.handleAuth();
       console.log('[App] Resultado da autenticação:', result);
@@ -47,7 +49,7 @@ const App = () => {
     } catch (err) {
       console.error('[App] Erro na autenticação:', err);
       console.error('[App] Mensagem do erro:', err.message);
-      toast.showError(err.message || 'Erro ao autenticar');
+      setAuthError(err.message || 'Erro ao autenticar');
     }
   };
 
@@ -158,18 +160,28 @@ const App = () => {
 
       <AuthModal
         show={auth.showAuthModal}
-        onClose={() => auth.setShowAuthModal(false)}
+        onClose={() => {
+          auth.setShowAuthModal(false);
+          setAuthError(''); // Limpar erro ao fechar modal
+        }}
         authMode={auth.authMode}
         onAuthModeChange={auth.setAuthMode}
         email={auth.email}
-        onEmailChange={auth.setEmail}
+        onEmailChange={(value) => {
+          auth.setEmail(value);
+          setAuthError(''); // Limpar erro ao digitar
+        }}
         password={auth.password}
-        onPasswordChange={auth.setPassword}
+        onPasswordChange={(value) => {
+          auth.setPassword(value);
+          setAuthError(''); // Limpar erro ao digitar
+        }}
         onSubmit={handleAuth}
         onForgotPassword={handleForgotPassword}
         showForgotPassword={auth.showForgotPassword}
         onToggleForgotPassword={auth.toggleForgotPassword}
         loading={auth.authLoading}
+        error={authError}
       />
 
       <ResetPasswordModal
