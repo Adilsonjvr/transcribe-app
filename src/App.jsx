@@ -23,22 +23,32 @@ const App = () => {
   const toast = useToast();
 
   // Auth handlers
-  const handleAuth = () => {
+  const handleAuth = async () => {
     try {
-      const result = auth.handleAuth();
+      const result = await auth.handleAuth();
       toast.showSuccess(result.message);
-      if (result.user) {
-        // Carrega o histórico do novo usuário
-      }
     } catch (err) {
       toast.showError(err.message);
     }
   };
 
-  const handleLogout = () => {
-    const message = auth.handleLogout();
-    toast.showSuccess(message);
-    setCurrentView('home');
+  const handleLogout = async () => {
+    try {
+      const message = await auth.handleLogout();
+      toast.showSuccess(message);
+      setCurrentView('home');
+    } catch (err) {
+      toast.showError(err.message || 'Erro ao fazer logout');
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    try {
+      const message = await auth.handleForgotPassword();
+      toast.showSuccess(message);
+    } catch (err) {
+      toast.showError(err.message);
+    }
   };
 
   // File handlers
@@ -137,6 +147,10 @@ const App = () => {
         password={auth.password}
         onPasswordChange={auth.setPassword}
         onSubmit={handleAuth}
+        onForgotPassword={handleForgotPassword}
+        showForgotPassword={auth.showForgotPassword}
+        onToggleForgotPassword={auth.toggleForgotPassword}
+        loading={auth.authLoading}
       />
 
       <main className="pt-32 pb-20 px-6 relative z-10">

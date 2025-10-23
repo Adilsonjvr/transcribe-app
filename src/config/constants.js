@@ -1,6 +1,8 @@
+// IMPORTANTE: Não coloque API keys diretamente aqui!
+// Use variáveis de ambiente (.env) para maior segurança
 export const API_CONFIG = {
-  EDGE_FUNCTION_URL: 'https://fbxdfjkptlfyexhhsgpy.supabase.co/functions/v1/dynamic-processor',
-  SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZieGRmamtwdGxmeWV4aGhzZ3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjExMjIwNzAsImV4cCI6MjA3NjY5ODA3MH0.QCkbiONVjRCwIldHA6JDanMN5l3VR56Palp4xQM5kKU'
+  EDGE_FUNCTION_URL: import.meta.env.VITE_EDGE_FUNCTION_URL || 'https://fbxdfjkptlfyexhhsgpy.supabase.co/functions/v1/dynamic-processor',
+  SUPABASE_ANON_KEY: import.meta.env.VITE_SUPABASE_ANON_KEY || ''
 };
 
 export const FILE_CONFIG = {
