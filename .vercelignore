@@ -1,0 +1,25 @@
+# Documentação técnica (não necessária em produção)
+.docs/
+edge-function-debug.ts
+
+# Arquivos de desenvolvimento
+*.log
+.DS_Store
+.env.local
+.env.development
+
+# Node modules (será instalado pelo Vercel)
+node_modules/
+
+# Arquivos de teste
+*.test.js
+*.test.jsx
+*.spec.js
+*.spec.jsx
+
+# Coverage
+coverage/
+
+# Temporários
+.tmp/
+temp/
