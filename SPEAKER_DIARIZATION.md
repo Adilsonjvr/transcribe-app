@@ -4,6 +4,17 @@
 
 Speaker Diarization é uma funcionalidade que identifica automaticamente diferentes pessoas falando em um áudio, rotulando cada segmento com "Speaker 1", "Speaker 2", etc. É ideal para entrevistas, podcasts, reuniões e qualquer áudio com múltiplos interlocutores.
 
+## 🎉 EXCELENTE NOTÍCIA!
+
+**AssemblyAI (nossa API de transcrição) JÁ TEM speaker diarization nativo e GRATUITO!**
+
+✅ Não precisa de Pyannote, WhisperX ou outras ferramentas complexas
+✅ Apenas ativar `speaker_labels: true` na API
+✅ Incluído no plano gratuito (100 min/mês)
+✅ Melhorias de 2024-2025: 10.1% mais preciso!
+
+**→ Consulte [EDGE_FUNCTION_GUIDE.md](EDGE_FUNCTION_GUIDE.md) para implementação completa!**
+
 ---
 
 ## ✅ Implementação no Frontend (CONCLUÍDA)
@@ -171,7 +182,35 @@ const speakerColors = {
 
 ### Estado Atual da API
 
-A Edge Function do Supabase (`dynamic-processor`) **atualmente NÃO suporta diarization**. O frontend está preparado para enviar o parâmetro `diarization: 'true'`, mas a API precisa ser atualizada para processar isso.
+A Edge Function do Supabase (`dynamic-processor`) **atualmente NÃO suporta diarization**. O frontend está preparado e envia o parâmetro `diarization: 'true'`, mas a Edge Function precisa ser atualizada.
+
+## 🚀 Implementação Recomendada: AssemblyAI (SIMPLES!)
+
+**Nossa solução usa AssemblyAI**, que já tem speaker diarization nativo!
+
+### Passos para Implementar:
+
+1. **Atualizar Edge Function** para aceitar parâmetro `diarization`
+2. **Adicionar `speaker_labels: true`** na config da AssemblyAI
+3. **Processar `utterances`** da resposta
+4. **Retornar segments com speakers** para o frontend
+
+**→ Código completo e instruções em: [EDGE_FUNCTION_GUIDE.md](EDGE_FUNCTION_GUIDE.md)**
+
+### Vantagens da AssemblyAI:
+- ✅ **Já está integrada** no projeto
+- ✅ **Grátis** (100 min/mês incluídos)
+- ✅ **Simples** (apenas 1 parâmetro a mais)
+- ✅ **Precisa** (melhorias de 10.1% em 2024-2025)
+- ✅ **Suporta 10+ idiomas**
+- ✅ **Timestamps automáticos**
+
+---
+
+## 📚 Outras Opções (Caso Não Use AssemblyAI)
+
+<details>
+<summary><strong>Clique para ver opções alternativas (Pyannote, WhisperX, etc.)</strong></summary>
 
 ### Opções de Implementação no Backend
 
@@ -303,11 +342,6 @@ combined_segments = merge_by_timestamp(
 
 Se não quiser hospedar os modelos:
 
-**AssemblyAI:**
-- API com diarization nativa
-- Paga por minuto de áudio
-- Fácil integração
-
 **Deepgram:**
 - API moderna com diarization
 - Pricing competitivo
@@ -316,6 +350,8 @@ Se não quiser hospedar os modelos:
 **Rev.ai:**
 - Focado em transcrição profissional
 - Suporte a diarization
+
+</details>
 
 ---
 
