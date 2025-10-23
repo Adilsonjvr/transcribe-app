@@ -1,5 +1,6 @@
 export { Header } from './Header';
 export { AuthModal } from './AuthModal';
+export { ResetPasswordModal } from './ResetPasswordModal';
 export { ToastMessage } from './ToastMessage';
 export { AnimatedBackground } from './AnimatedBackground';
 export { HeroSection } from './HeroSection';

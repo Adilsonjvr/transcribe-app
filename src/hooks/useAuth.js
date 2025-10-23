@@ -51,10 +51,15 @@ export const useAuth = () => {
    * Fazer login ou signup
    */
   const handleAuth = useCallback(async () => {
+    console.log('[useAuth] Iniciando handleAuth...');
+    console.log('[useAuth] Email:', email);
+    console.log('[useAuth] AuthMode:', authMode);
+
     // Validar campos
     const validation = validateAuthFields(email, password);
 
     if (!validation.isValid) {
+      console.error('[useAuth] Validação falhou:', validation.error);
       throw new Error(validation.error);
     }
 
@@ -64,16 +69,22 @@ export const useAuth = () => {
       let result;
 
       if (authMode === 'signup') {
+        console.log('[useAuth] Chamando signUp...');
         result = await signUp(email, password);
       } else {
+        console.log('[useAuth] Chamando signIn...');
         result = await signIn(email, password);
       }
 
+      console.log('[useAuth] Resultado do serviço:', result);
+
       if (!result.success) {
+        console.error('[useAuth] Autenticação falhou:', result.error);
         throw new Error(result.error);
       }
 
       // Sucesso
+      console.log('[useAuth] Autenticação bem-sucedida!');
       setUser(result.user);
       setShowAuthModal(false);
       setEmail('');
@@ -86,6 +97,7 @@ export const useAuth = () => {
           : 'Login realizado com sucesso!'
       };
     } catch (error) {
+      console.error('[useAuth] Erro capturado:', error);
       throw error;
     } finally {
       setAuthLoading(false);

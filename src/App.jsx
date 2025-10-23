@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Header,
   AuthModal,
+  ResetPasswordModal,
   ToastMessage,
   AnimatedBackground,
   HeroSection,
@@ -15,6 +16,7 @@ import { copyToClipboard, downloadFile, createTranscriptionJSON } from './utils/
 
 const App = () => {
   const [currentView, setCurrentView] = useState('home');
+  const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
 
   // Custom Hooks
   const auth = useAuth();
@@ -22,13 +24,30 @@ const App = () => {
   const history = useHistory(auth.user);
   const toast = useToast();
 
+  // Detectar recovery token na URL (quando usuário clica no link de reset de senha)
+  useEffect(() => {
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const type = hashParams.get('type');
+
+    if (type === 'recovery') {
+      // Usuário veio de um link de reset de senha
+      setShowResetPasswordModal(true);
+      // Limpar hash da URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
+
   // Auth handlers
   const handleAuth = async () => {
     try {
+      console.log('[App] Iniciando autenticação...');
       const result = await auth.handleAuth();
+      console.log('[App] Resultado da autenticação:', result);
       toast.showSuccess(result.message);
     } catch (err) {
-      toast.showError(err.message);
+      console.error('[App] Erro na autenticação:', err);
+      console.error('[App] Mensagem do erro:', err.message);
+      toast.showError(err.message || 'Erro ao autenticar');
     }
   };
 
@@ -151,6 +170,15 @@ const App = () => {
         showForgotPassword={auth.showForgotPassword}
         onToggleForgotPassword={auth.toggleForgotPassword}
         loading={auth.authLoading}
+      />
+
+      <ResetPasswordModal
+        show={showResetPasswordModal}
+        onClose={() => setShowResetPasswordModal(false)}
+        onSuccess={(message) => {
+          toast.showSuccess(message);
+          setShowResetPasswordModal(false);
+        }}
       />
 
       <main className="pt-32 pb-20 px-6 relative z-10">
