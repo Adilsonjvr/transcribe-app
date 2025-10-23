@@ -9,6 +9,9 @@ export const useTranscription = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [transcription, setTranscription] = useState('');
+  const [segments, setSegments] = useState([]); // Novo: segmentos com timestamps
+  const [language, setLanguage] = useState('auto'); // Novo: idioma selecionado
+  const [detectedLanguage, setDetectedLanguage] = useState(null); // Novo: idioma detectado
   const [audioFileId, setAudioFileId] = useState(null);
   const [wordCount, setWordCount] = useState(0);
   const [charCount, setCharCount] = useState(0);
@@ -64,7 +67,7 @@ export const useTranscription = () => {
         });
       }, 300);
 
-      const transcribedText = await transcribeAudio(file);
+      const result = await transcribeAudio(file, language);
 
       // Completar progresso
       clearInterval(progressInterval);
@@ -73,13 +76,18 @@ export const useTranscription = () => {
       // Pequeno delay para mostrar 100%
       await new Promise(resolve => setTimeout(resolve, 500));
 
-      setTranscription(transcribedText);
+      // Atualizar com dados da transcrição
+      setTranscription(result.text);
+      setSegments(result.segments || []);
+      setDetectedLanguage(result.detectedLanguage || language);
       setIsTranscribing(false);
       setTranscriptionProgress(0);
 
       return {
         success: true,
-        text: transcribedText,
+        text: result.text,
+        segments: result.segments,
+        language: result.detectedLanguage,
         message: '✓ Transcrição concluída!'
       };
     } catch (err) {
@@ -93,6 +101,8 @@ export const useTranscription = () => {
   const handleNewTranscription = () => {
     setFile(null);
     setTranscription('');
+    setSegments([]);
+    setDetectedLanguage(null);
     setUploadProgress(0);
     setAudioFileId(null);
   };
@@ -123,6 +133,11 @@ export const useTranscription = () => {
     isTranscribing,
     transcription,
     setTranscription,
+    segments,
+    setSegments,
+    language,
+    setLanguage,
+    detectedLanguage,
     audioFileId,
     wordCount,
     charCount,

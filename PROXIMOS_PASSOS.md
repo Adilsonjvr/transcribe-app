@@ -21,7 +21,6 @@
 - [x] Dark mode toggle
 - [ ] **Melhorar responsividade mobile**
 - [ ] **Adicionar animações de transição entre páginas**
-- [ ] **Implementar temas personalizáveis (além de dark/light)**
 - [ ] **Feedback visual em todas as ações**
 
 ### Nível 2: Funcionalidades Core 🚀
@@ -30,7 +29,6 @@
 - [ ] **Timestamps na transcrição**
 - [ ] **Export para mais formatos** (PDF, DOCX, SRT)
 - [ ] **Busca no histórico de transcrições**
-- [ ] **Tags e categorias para transcrições**
 - [ ] **Compartilhamento de transcrições**
 
 ### Nível 3: Performance e Otimização ⚡

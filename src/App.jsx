@@ -10,7 +10,9 @@ import {
   TranscriptionResult,
   ProfileView,
   Footer,
-  TranscriptionSkeleton
+  TranscriptionSkeleton,
+  LanguageSelector,
+  TimestampedTranscription
 } from './components';
 import { useAuth, useTranscription, useHistory, useToast, useDarkMode } from './hooks';
 import { copyToClipboard, downloadFile, createTranscriptionJSON } from './utils/fileUtils';
@@ -122,13 +124,33 @@ const App = () => {
       let extension = 'txt';
 
       if (format === 'json') {
-        content = createTranscriptionJSON(
-          transcription.transcription,
-          transcription.wordCount,
-          transcription.charCount
-        );
+        // Se tiver timestamps, incluir no JSON
+        if (transcription.segments && transcription.segments.length > 0) {
+          content = JSON.stringify({
+            text: transcription.transcription,
+            segments: transcription.segments,
+            language: transcription.detectedLanguage || transcription.language,
+            wordCount: transcription.wordCount,
+            charCount: transcription.charCount,
+            timestamp: new Date().toISOString()
+          }, null, 2);
+        } else {
+          content = createTranscriptionJSON(
+            transcription.transcription,
+            transcription.wordCount,
+            transcription.charCount
+          );
+        }
         mimeType = 'application/json';
         extension = 'json';
+      } else if (format === 'txt') {
+        // Se tiver timestamps, incluir no TXT
+        if (transcription.segments && transcription.segments.length > 0) {
+          content = transcription.segments.map((seg) => {
+            const timestamp = formatTimestamp(seg.start);
+            return `[${timestamp}] ${seg.text}`;
+          }).join('\n\n');
+        }
       }
 
       downloadFile(content, `transcricao_${Date.now()}.${extension}`, mimeType);
@@ -136,6 +158,12 @@ const App = () => {
     } catch (err) {
       toast.showError(err.message || 'Erro ao baixar arquivo');
     }
+  };
+
+  const formatTimestamp = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
   // History actions
@@ -204,18 +232,29 @@ const App = () => {
               {!transcription.transcription && !transcription.file && <HeroSection />}
 
               {!transcription.transcription && !transcription.isTranscribing && (
-                <FileUpload
-                  file={transcription.file}
-                  isDragging={transcription.isDragging}
-                  isUploading={transcription.isUploading}
-                  isTranscribing={transcription.isTranscribing}
-                  uploadProgress={transcription.uploadProgress}
-                  onFileSelect={handleFileSelect}
-                  onDragOver={transcription.handleDragOver}
-                  onDragLeave={transcription.handleDragLeave}
-                  onDrop={transcription.handleDrop}
-                  onUploadAndTranscribe={handleUploadAndTranscribe}
-                />
+                <>
+                  {/* Seletor de Idioma */}
+                  <div className="mb-8">
+                    <LanguageSelector
+                      selectedLanguage={transcription.language}
+                      onLanguageChange={transcription.setLanguage}
+                      disabled={transcription.isUploading || transcription.isTranscribing}
+                    />
+                  </div>
+
+                  <FileUpload
+                    file={transcription.file}
+                    isDragging={transcription.isDragging}
+                    isUploading={transcription.isUploading}
+                    isTranscribing={transcription.isTranscribing}
+                    uploadProgress={transcription.uploadProgress}
+                    onFileSelect={handleFileSelect}
+                    onDragOver={transcription.handleDragOver}
+                    onDragLeave={transcription.handleDragLeave}
+                    onDrop={transcription.handleDrop}
+                    onUploadAndTranscribe={handleUploadAndTranscribe}
+                  />
+                </>
               )}
 
               {transcription.isTranscribing && !transcription.transcription && (
@@ -223,16 +262,30 @@ const App = () => {
               )}
 
               {transcription.transcription && (
-                <TranscriptionResult
-                  transcription={transcription.transcription}
-                  wordCount={transcription.wordCount}
-                  charCount={transcription.charCount}
-                  onTranscriptionChange={transcription.setTranscription}
-                  onCopy={handleCopy}
-                  onDownloadTxt={() => handleDownload('txt')}
-                  onDownloadJson={() => handleDownload('json')}
-                  onNewTranscription={transcription.handleNewTranscription}
-                />
+                <>
+                  {/* Se tiver segmentos com timestamps, usar componente apropriado */}
+                  {transcription.segments && transcription.segments.length > 0 ? (
+                    <TimestampedTranscription
+                      segments={transcription.segments}
+                      onCopy={handleCopy}
+                      onDownloadTxt={() => handleDownload('txt')}
+                      onDownloadJson={() => handleDownload('json')}
+                      onNewTranscription={transcription.handleNewTranscription}
+                      audioFile={transcription.file}
+                    />
+                  ) : (
+                    <TranscriptionResult
+                      transcription={transcription.transcription}
+                      wordCount={transcription.wordCount}
+                      charCount={transcription.charCount}
+                      onTranscriptionChange={transcription.setTranscription}
+                      onCopy={handleCopy}
+                      onDownloadTxt={() => handleDownload('txt')}
+                      onDownloadJson={() => handleDownload('json')}
+                      onNewTranscription={transcription.handleNewTranscription}
+                    />
+                  )}
+                </>
               )}
             </>
           )}

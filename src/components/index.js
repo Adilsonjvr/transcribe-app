@@ -11,3 +11,5 @@ export { Footer } from './Footer';
 export { AudioPreview } from './AudioPreview';
 export { TranscriptionSkeleton } from './TranscriptionSkeleton';
 export { DarkModeToggle } from './DarkModeToggle';
+export { LanguageSelector } from './LanguageSelector';
+export { TimestampedTranscription } from './TimestampedTranscription';
