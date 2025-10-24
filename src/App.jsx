@@ -18,9 +18,10 @@ import {
 import { useAuth, useTranscription, useHistory, useToast, useDarkMode } from './hooks';
 import { copyToClipboard, downloadFile, createTranscriptionJSON } from './utils/fileUtils';
 import { exportToPDF, exportToDOCX } from './utils/exportUtils';
+import { LandingPage } from './pages/LandingPage';
 
 const App = () => {
-  const [currentView, setCurrentView] = useState('home');
+  const [currentView, setCurrentView] = useState('landing'); // Começar na landing page
   const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
   const [authError, setAuthError] = useState('');
 
@@ -194,6 +195,19 @@ const App = () => {
     setCurrentView('home');
     toast.showSuccess('Transcrição carregada!');
   };
+
+  // Handler para começar a usar o app da landing page
+  const handleGetStarted = () => {
+    setCurrentView('home');
+    if (!auth.user) {
+      auth.setShowAuthModal(true);
+    }
+  };
+
+  // Renderizar Landing Page
+  if (currentView === 'landing') {
+    return <LandingPage onGetStarted={handleGetStarted} />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 dark:from-gray-900 dark:via-gray-800 dark:to-black text-white relative overflow-hidden transition-colors duration-500">
