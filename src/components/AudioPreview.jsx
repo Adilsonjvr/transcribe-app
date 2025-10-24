@@ -89,44 +89,48 @@ export const AudioPreview = ({ file }) => {
   if (!audioUrl) return null;
 
   return (
-    <div className="mb-6 p-6 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+    <div className="mb-6 p-4 sm:p-6 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
       <audio ref={audioRef} src={audioUrl} />
 
-      <div className="flex items-center gap-4 mb-4">
-        <button
-          onClick={togglePlay}
-          className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center hover:from-purple-600 hover:to-blue-600 transition-all"
-        >
-          {isPlaying ? (
-            <Pause className="w-6 h-6 text-white" fill="white" />
-          ) : (
-            <Play className="w-6 h-6 text-white ml-1" fill="white" />
-          )}
-        </button>
-
-        <div className="flex-1">
-          <div
-            className="h-2 bg-white/20 rounded-full cursor-pointer relative group"
-            onClick={handleSeek}
+      {/* Mobile Layout - Stacked */}
+      <div className="flex flex-col gap-4 sm:hidden">
+        {/* Play Button + Time Display */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={togglePlay}
+            className="w-12 h-12 flex-shrink-0 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center hover:from-purple-600 hover:to-blue-600 transition-all"
           >
-            <div
-              className="h-full bg-gradient-to-r from-purple-500 to-blue-500 rounded-full relative"
-              style={{ width: `${progress}%` }}
-            >
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg" />
-            </div>
-          </div>
+            {isPlaying ? (
+              <Pause className="w-6 h-6 text-white" fill="white" />
+            ) : (
+              <Play className="w-6 h-6 text-white ml-1" fill="white" />
+            )}
+          </button>
 
-          <div className="flex justify-between text-xs text-white/50 mt-1">
+          <div className="flex justify-between text-xs text-white/50 flex-1">
             <span>{formatTime(currentTime)}</span>
             <span>{formatTime(duration)}</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        {/* Progress Bar */}
+        <div
+          className="h-2 bg-white/20 rounded-full cursor-pointer relative group"
+          onClick={handleSeek}
+        >
+          <div
+            className="h-full bg-gradient-to-r from-purple-500 to-blue-500 rounded-full relative"
+            style={{ width: `${progress}%` }}
+          >
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-lg" />
+          </div>
+        </div>
+
+        {/* Volume Controls */}
+        <div className="flex items-center gap-3">
           <button
             onClick={toggleMute}
-            className="w-8 h-8 rounded-full hover:bg-white/10 flex items-center justify-center transition-all"
+            className="w-10 h-10 flex-shrink-0 rounded-full hover:bg-white/10 flex items-center justify-center transition-all"
           >
             {isMuted || volume === 0 ? (
               <VolumeX className="w-5 h-5 text-white/70" />
@@ -142,16 +146,82 @@ export const AudioPreview = ({ file }) => {
             step="0.01"
             value={volume}
             onChange={handleVolumeChange}
-            className="w-20 h-1 bg-white/20 rounded-full appearance-none cursor-pointer
+            className="flex-1 h-1 bg-white/20 rounded-full appearance-none cursor-pointer
               [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3
               [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full
               [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-lg"
           />
         </div>
+
+        {/* File Info */}
+        <div className="text-sm text-white/50 text-center">
+          Preview • {(file.size / (1024 * 1024)).toFixed(2)} MB
+        </div>
       </div>
 
-      <div className="text-sm text-white/50">
-        Preview do áudio • Tamanho: {(file.size / (1024 * 1024)).toFixed(2)} MB
+      {/* Desktop Layout - Horizontal */}
+      <div className="hidden sm:block">
+        <div className="flex items-center gap-4 mb-4">
+          <button
+            onClick={togglePlay}
+            className="w-12 h-12 flex-shrink-0 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center hover:from-purple-600 hover:to-blue-600 transition-all"
+          >
+            {isPlaying ? (
+              <Pause className="w-6 h-6 text-white" fill="white" />
+            ) : (
+              <Play className="w-6 h-6 text-white ml-1" fill="white" />
+            )}
+          </button>
+
+          <div className="flex-1">
+            <div
+              className="h-2 bg-white/20 rounded-full cursor-pointer relative group"
+              onClick={handleSeek}
+            >
+              <div
+                className="h-full bg-gradient-to-r from-purple-500 to-blue-500 rounded-full relative"
+                style={{ width: `${progress}%` }}
+              >
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg" />
+              </div>
+            </div>
+
+            <div className="flex justify-between text-xs text-white/50 mt-1">
+              <span>{formatTime(currentTime)}</span>
+              <span>{formatTime(duration)}</span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={toggleMute}
+              className="w-8 h-8 rounded-full hover:bg-white/10 flex items-center justify-center transition-all"
+            >
+              {isMuted || volume === 0 ? (
+                <VolumeX className="w-5 h-5 text-white/70" />
+              ) : (
+                <Volume2 className="w-5 h-5 text-white/70" />
+              )}
+            </button>
+
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={volume}
+              onChange={handleVolumeChange}
+              className="w-20 h-1 bg-white/20 rounded-full appearance-none cursor-pointer
+                [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3
+                [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full
+                [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-lg"
+            />
+          </div>
+        </div>
+
+        <div className="text-sm text-white/50">
+          Preview do áudio • Tamanho: {(file.size / (1024 * 1024)).toFixed(2)} MB
+        </div>
       </div>
     </div>
   );

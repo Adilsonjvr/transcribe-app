@@ -17,6 +17,7 @@ import {
 } from './components';
 import { useAuth, useTranscription, useHistory, useToast, useDarkMode } from './hooks';
 import { copyToClipboard, downloadFile, createTranscriptionJSON } from './utils/fileUtils';
+import { exportToPDF, exportToDOCX } from './utils/exportUtils';
 
 const App = () => {
   const [currentView, setCurrentView] = useState('home');
@@ -116,10 +117,29 @@ const App = () => {
     }
   };
 
-  const handleDownload = (format) => {
+  const handleDownload = async (format) => {
     try {
       auth.requireAuth('baixar o arquivo');
 
+      const metadata = {
+        language: transcription.detectedLanguage || transcription.language,
+        wordCount: transcription.wordCount,
+        charCount: transcription.charCount
+      };
+
+      if (format === 'pdf') {
+        await exportToPDF(transcription.transcription, transcription.segments, metadata);
+        toast.showSuccess('Download PDF concluído!');
+        return;
+      }
+
+      if (format === 'docx') {
+        await exportToDOCX(transcription.transcription, transcription.segments, metadata);
+        toast.showSuccess('Download DOCX concluído!');
+        return;
+      }
+
+      // Formatos TXT e JSON
       let content = transcription.transcription;
       let mimeType = 'text/plain';
       let extension = 'txt';
@@ -281,6 +301,8 @@ const App = () => {
                       onCopy={handleCopy}
                       onDownloadTxt={() => handleDownload('txt')}
                       onDownloadJson={() => handleDownload('json')}
+                      onDownloadPdf={() => handleDownload('pdf')}
+                      onDownloadDocx={() => handleDownload('docx')}
                       onNewTranscription={transcription.handleNewTranscription}
                       audioFile={transcription.file}
                     />
@@ -293,6 +315,8 @@ const App = () => {
                       onCopy={handleCopy}
                       onDownloadTxt={() => handleDownload('txt')}
                       onDownloadJson={() => handleDownload('json')}
+                      onDownloadPdf={() => handleDownload('pdf')}
+                      onDownloadDocx={() => handleDownload('docx')}
                       onNewTranscription={transcription.handleNewTranscription}
                     />
                   )}

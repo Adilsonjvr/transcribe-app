@@ -3,6 +3,8 @@ import { validateFile } from '../utils/validators';
 import { transcribeAudio, simulateUpload } from '../services/transcriptionService';
 import { countWords, countCharacters } from '../utils/formatters';
 
+const STORAGE_KEY = 'transcribe_current_session';
+
 export const useTranscription = () => {
   const [file, setFile] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -18,6 +20,42 @@ export const useTranscription = () => {
   const [charCount, setCharCount] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [transcriptionProgress, setTranscriptionProgress] = useState(0);
+
+  // Carregar dados salvos do localStorage ao iniciar
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const data = JSON.parse(saved);
+        if (data.transcription) {
+          setTranscription(data.transcription);
+          setSegments(data.segments || []);
+          setDetectedLanguage(data.detectedLanguage);
+          setLanguage(data.language || 'auto');
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao carregar dados salvos:', error);
+    }
+  }, []);
+
+  // Salvar no localStorage quando transcription mudar
+  useEffect(() => {
+    if (transcription) {
+      try {
+        const dataToSave = {
+          transcription,
+          segments,
+          detectedLanguage,
+          language,
+          timestamp: new Date().toISOString()
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+      } catch (error) {
+        console.error('Erro ao salvar dados:', error);
+      }
+    }
+  }, [transcription, segments, detectedLanguage, language]);
 
   useEffect(() => {
     if (transcription) {
@@ -106,6 +144,12 @@ export const useTranscription = () => {
     setDetectedLanguage(null);
     setUploadProgress(0);
     setAudioFileId(null);
+    // Limpar localStorage
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (error) {
+      console.error('Erro ao limpar dados salvos:', error);
+    }
   };
 
   const handleDragOver = (e) => {
