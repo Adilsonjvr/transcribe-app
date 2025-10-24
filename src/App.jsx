@@ -80,6 +80,11 @@ const App = () => {
       const result = await auth.handleAuth();
       console.log('[App] Resultado da autenticação:', result);
       toast.showSuccess(result.message);
+
+      // Após login bem-sucedido, redirecionar para o app
+      if (result.user && currentView === 'landing') {
+        setCurrentView('home');
+      }
     } catch (err) {
       console.error('[App] Erro na autenticação:', err);
       console.error('[App] Mensagem do erro:', err.message);
@@ -225,15 +230,53 @@ const App = () => {
 
   // Handler para começar a usar o app da landing page
   const handleGetStarted = () => {
-    setCurrentView('home');
     if (!auth.user) {
+      // Se não estiver logado, apenas abre o modal (mantém na landing)
       auth.setShowAuthModal(true);
+    } else {
+      // Se já estiver logado, vai direto para o app
+      setCurrentView('home');
     }
   };
 
-  // Renderizar Landing Page
+  // Renderizar Landing Page com modal de auth
   if (currentView === 'landing') {
-    return <LandingPage onGetStarted={handleGetStarted} />;
+    return (
+      <>
+        <LandingPage onGetStarted={handleGetStarted} />
+
+        {/* Modal de autenticação disponível na landing page */}
+        <AuthModal
+          show={auth.showAuthModal}
+          onClose={() => {
+            auth.setShowAuthModal(false);
+            setAuthError('');
+          }}
+          authMode={auth.authMode}
+          onAuthModeChange={auth.setAuthMode}
+          email={auth.email}
+          onEmailChange={(value) => {
+            auth.setEmail(value);
+            setAuthError('');
+          }}
+          password={auth.password}
+          onPasswordChange={(value) => {
+            auth.setPassword(value);
+            setAuthError('');
+          }}
+          onSubmit={handleAuth}
+          onSocialLogin={auth.handleSocialLogin}
+          onForgotPassword={handleForgotPassword}
+          showForgotPassword={auth.showForgotPassword}
+          onToggleForgotPassword={auth.toggleForgotPassword}
+          loading={auth.authLoading}
+          error={authError}
+        />
+
+        <ToastMessage message={toast.error} type="error" />
+        <ToastMessage message={toast.success} type="success" />
+      </>
+    );
   }
 
   return (
