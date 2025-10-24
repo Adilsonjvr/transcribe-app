@@ -21,7 +21,17 @@ import { exportToPDF, exportToDOCX } from './utils/exportUtils';
 import { LandingPage } from './pages/LandingPage';
 
 const App = () => {
-  const [currentView, setCurrentView] = useState('landing'); // Começar na landing page
+  // Carregar view salva ou mostrar landing page
+  const getSavedView = () => {
+    try {
+      const saved = localStorage.getItem('transcribe_current_view');
+      return saved || 'landing';
+    } catch {
+      return 'landing';
+    }
+  };
+
+  const [currentView, setCurrentView] = useState(getSavedView());
   const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
   const [authError, setAuthError] = useState('');
 
@@ -32,6 +42,22 @@ const App = () => {
   const toast = useToast();
   const darkMode = useDarkMode();
 
+  // Salvar view atual no localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('transcribe_current_view', currentView);
+    } catch (error) {
+      console.error('Erro ao salvar view:', error);
+    }
+  }, [currentView]);
+
+  // Se usuário não está logado e não está na landing, redirecionar
+  useEffect(() => {
+    if (!auth.user && currentView !== 'landing') {
+      setCurrentView('landing');
+    }
+  }, [auth.user, currentView]);
+
   // Detectar recovery token na URL (quando usuário clica no link de reset de senha)
   useEffect(() => {
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
@@ -40,6 +66,7 @@ const App = () => {
     if (type === 'recovery') {
       // Usuário veio de um link de reset de senha
       setShowResetPasswordModal(true);
+      setCurrentView('home');
       // Limpar hash da URL
       window.history.replaceState({}, document.title, window.location.pathname);
     }
@@ -245,6 +272,7 @@ const App = () => {
           setAuthError(''); // Limpar erro ao digitar
         }}
         onSubmit={handleAuth}
+        onSocialLogin={auth.handleSocialLogin}
         onForgotPassword={handleForgotPassword}
         showForgotPassword={auth.showForgotPassword}
         onToggleForgotPassword={auth.toggleForgotPassword}

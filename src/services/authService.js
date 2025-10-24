@@ -79,6 +79,45 @@ export const signIn = async (email, password) => {
 };
 
 /**
+ * Login com OAuth (Google, Apple, etc)
+ * @param {string} provider - Provider name ('google', 'apple', etc)
+ * @returns {Promise<{success: boolean, error?: string}>}
+ */
+export const signInWithOAuth = async (provider) => {
+  try {
+    const { data, error} = await supabase.auth.signInWithOAuth({
+      provider: provider,
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        }
+      }
+    });
+
+    if (error) {
+      return {
+        success: false,
+        error: translateAuthError(error.message)
+      };
+    }
+
+    // O OAuth redireciona automaticamente
+    return {
+      success: true,
+      url: data.url
+    };
+  } catch (error) {
+    console.error('Erro no OAuth:', error);
+    return {
+      success: false,
+      error: `Erro ao fazer login com ${provider}`
+    };
+  }
+};
+
+/**
  * Fazer logout
  * @returns {Promise<{success: boolean, error?: string}>}
  */

@@ -127,6 +127,30 @@ export const useAuth = () => {
   }, []);
 
   /**
+   * Login com provedor social (Google, Apple, etc)
+   */
+  const handleSocialLogin = useCallback(async (provider) => {
+    setAuthLoading(true);
+
+    try {
+      const { signInWithOAuth } = await import('../services/authService');
+      const result = await signInWithOAuth(provider);
+
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+
+      // O OAuth redireciona, então não precisamos fazer mais nada aqui
+      return result;
+    } catch (error) {
+      console.error('[useAuth] Erro no OAuth:', error);
+      throw new Error(`Erro ao fazer login com ${provider}`);
+    } finally {
+      setAuthLoading(false);
+    }
+  }, []);
+
+  /**
    * Recuperar senha
    */
   const handleForgotPassword = useCallback(async () => {
@@ -196,6 +220,7 @@ export const useAuth = () => {
 
     // Ações
     handleAuth,
+    handleSocialLogin,
     handleLogout,
     handleForgotPassword,
     requireAuth,
