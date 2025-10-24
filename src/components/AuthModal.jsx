@@ -72,12 +72,12 @@ export const AuthModal = ({
           <X className="w-5 h-5" />
         </button>
 
-        <h2 className="text-2xl font-bold mb-6">
+        <h2 className="text-2xl font-bold mb-6 text-white">
           {showForgotPassword
             ? 'Recuperar Senha'
             : authMode === 'signup'
-              ? 'Criar Conta'
-              : 'Entrar'}
+            ? 'Criar Conta'
+            : 'Entrar'}
         </h2>
 
         {error && (
