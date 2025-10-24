@@ -88,7 +88,8 @@ export const signInWithOAuth = async (provider) => {
     const { data, error} = await supabase.auth.signInWithOAuth({
       provider: provider,
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: window.location.origin,
+        skipBrowserRedirect: false,
         queryParams: {
           access_type: 'offline',
           prompt: 'consent',
@@ -97,13 +98,16 @@ export const signInWithOAuth = async (provider) => {
     });
 
     if (error) {
+      console.error('OAuth Error:', error);
       return {
         success: false,
         error: translateAuthError(error.message)
       };
     }
 
-    // O OAuth redireciona automaticamente
+    // Supabase vai redirecionar automaticamente
+    // O navegador vai para a URL do Google
+    console.log('OAuth redirect URL:', data.url);
     return {
       success: true,
       url: data.url
