@@ -26,18 +26,18 @@ export const FileUpload = ({
   };
 
   return (
-    <div className="mb-12">
+    <div className="mb-12 animate-scale-in">
       <div
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
         onDrop={onDrop}
-        className={`relative border-2 border-dashed rounded-2xl p-16 text-center transition-all bg-white/5 backdrop-blur-sm ${
+        className={`relative border-2 border-dashed rounded-2xl p-16 text-center transition-all duration-300 bg-white/5 backdrop-blur-sm hover-lift ${
           isDragging
-            ? 'border-purple-400 bg-purple-500/10'
+            ? 'border-purple-400 bg-purple-500/10 scale-105 animate-pulse-glow'
             : 'border-white/20 hover:border-white/40 hover:bg-white/10'
         }`}
       >
-        <Upload className="w-16 h-16 mx-auto mb-6 text-purple-300" />
+        <Upload className={`w-16 h-16 mx-auto mb-6 text-purple-300 ${isDragging ? 'animate-bounce-in' : 'animate-float'}`} />
         <h3 className="text-2xl font-bold mb-2">
           {file ? file.name : 'Arraste seu arquivo aqui'}
         </h3>
@@ -55,21 +55,21 @@ export const FileUpload = ({
 
         <button
           onClick={() => fileInputRef.current?.click()}
-          className="px-8 py-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold rounded-full hover:from-purple-600 hover:to-blue-600 transition-all inline-flex items-center gap-2"
+          className="px-8 py-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold rounded-full hover:from-purple-600 hover:to-blue-600 transition-all inline-flex items-center gap-2 hover-lift hover-glow shadow-lg"
         >
           <FileAudio className="w-5 h-5" />
           Escolher Arquivo
         </button>
 
         {file && (
-          <div className="mt-8 space-y-4">
+          <div className="mt-8 space-y-4 animate-slide-in-left">
             {/* Audio Preview */}
             <AudioPreview file={file} />
 
-            <div className="p-6 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+            <div className="p-6 glass-strong rounded-xl border border-white/20 hover-lift">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <FileAudio className="w-8 h-8 text-purple-400" />
+                  <FileAudio className="w-8 h-8 text-purple-400 animate-float" />
                   <div className="text-left">
                     <p className="font-medium">{file.name}</p>
                     <p className="text-sm text-white/50">
@@ -80,14 +80,14 @@ export const FileUpload = ({
               </div>
 
               {isUploading && (
-                <div className="mb-4">
+                <div className="mb-4 animate-slide-in-right">
                   <div className="flex justify-between mb-2">
                     <span className="text-sm">Enviando...</span>
-                    <span className="text-sm font-medium">{uploadProgress}%</span>
+                    <span className="text-sm font-medium animate-pulse">{uploadProgress}%</span>
                   </div>
-                  <div className="w-full h-1 bg-white/20 rounded-full overflow-hidden">
+                  <div className="w-full h-2 bg-white/20 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-gradient-to-r from-purple-500 to-blue-500 transition-all duration-300"
+                      className="h-full bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 transition-all duration-300 animate-gradient"
                       style={{ width: `${uploadProgress}%` }}
                     />
                   </div>
@@ -95,16 +95,16 @@ export const FileUpload = ({
               )}
 
               {isTranscribing && (
-                <div className="flex items-center justify-center gap-3 mb-4">
+                <div className="flex items-center justify-center gap-3 mb-4 animate-bounce-in">
                   <Loader2 className="w-5 h-5 animate-spin text-purple-400" />
-                  <span className="font-medium">Transcrevendo áudio...</span>
+                  <span className="font-medium animate-pulse">Transcrevendo áudio...</span>
                 </div>
               )}
 
               <button
                 onClick={onUploadAndTranscribe}
                 disabled={isUploading || isTranscribing}
-                className="w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold py-4 rounded-full hover:from-purple-600 hover:to-blue-600 disabled:from-gray-600 disabled:to-gray-600 disabled:text-white/50 transition-all flex items-center justify-center gap-2"
+                className="w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold py-4 rounded-full hover:from-purple-600 hover:to-blue-600 disabled:from-gray-600 disabled:to-gray-600 disabled:text-white/50 transition-all flex items-center justify-center gap-2 hover-lift hover-glow shadow-lg"
               >
                 {isUploading || isTranscribing ? (
                   <>
