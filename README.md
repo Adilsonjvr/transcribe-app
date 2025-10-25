@@ -50,7 +50,7 @@ Plataforma moderna e profissional de transcrição de áudio com **Speaker Diari
 
 ## 🆕 Atualizações Recentes
 
-### v2.0 - Major Update (Outubro 2024)
+### v2.0 - Major Update (Outubro 2025)
 
 #### 🎨 UX/UI Completo
 - Interface 100% traduzida para Português (incluindo Landing Page)
