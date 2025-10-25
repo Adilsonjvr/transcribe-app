@@ -1,4 +1,9 @@
-import { supabase } from './supabase';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://fbxdfjkptlfyexhhsgpy.supabase.co';
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZieGRmamtwdGxmeWV4aGhzZ3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU2NzM0MzksImV4cCI6MjA1MTI0OTQzOX0.B5Kq7T28Vk0VKUCbQ8GUPRYUzB4KZdcNuv4c0ZPOz04';
+
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 /**
  * Obter perfil do usuário
