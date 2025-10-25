@@ -247,16 +247,8 @@ const AppContent = () => {
     }
   }, [navigate, auth.user, toast]);
 
-  // Redirecionar para /app quando usuário fizer login (incluindo OAuth)
-  useEffect(() => {
-    if (auth.user && !auth.loading && location.pathname === '/') {
-      // Pequeno delay para garantir que o usuário foi carregado completamente
-      const timer = setTimeout(() => {
-        navigate('/app');
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [auth.user, auth.loading, location.pathname, navigate]);
+  // Não redirecionar automaticamente usuários logados da landing page
+  // Permite que usuários logados acessem a landing page através do botão "Início"
 
   // Auth handlers
   const handleAuth = async () => {
