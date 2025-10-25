@@ -17,10 +17,11 @@ import {
   DiarizationToggle,
   ProtectedRoute
 } from './components';
-import { useAuth, useTranscription, useHistory, useToast, useDarkMode } from './hooks';
+import { useAuth, useTranscription, useHistory, useToast, useDarkMode, useProfile } from './hooks';
 import { copyToClipboard, downloadFile, createTranscriptionJSON } from './utils/fileUtils';
 import { exportToPDF, exportToDOCX } from './utils/exportUtils';
 import { LandingPage } from './pages/LandingPage';
+import { PricingPage } from './pages/PricingPage';
 
 // Componente da Landing Page com navegação
 const LandingPageRoute = ({ onGetStarted, authProps, toast }) => {
@@ -159,7 +160,7 @@ const AppPage = ({
 };
 
 // Componente da Página de Perfil
-const ProfilePage = ({ auth, history, toast, darkMode, authProps, handleLogout, loadTranscription }) => {
+const ProfilePage = ({ auth, profile, history, toast, darkMode, authProps, handleLogout, loadTranscription, onUpdateProfile, onUploadAvatar, onDeleteAvatar, profileUpdating }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 dark:from-gray-900 dark:via-gray-800 dark:to-black text-white relative overflow-hidden transition-colors duration-500">
       <AnimatedBackground />
@@ -181,9 +182,14 @@ const ProfilePage = ({ auth, history, toast, darkMode, authProps, handleLogout, 
         <div className="max-w-5xl mx-auto">
           <ProfileView
             user={auth.user}
+            profile={profile}
             transcriptionHistory={history.transcriptionHistory}
             onLoadTranscription={loadTranscription}
             onDeleteFromHistory={history.deleteFromHistory}
+            onUpdateProfile={onUpdateProfile}
+            onUploadAvatar={onUploadAvatar}
+            onDeleteAvatar={onDeleteAvatar}
+            profileUpdating={profileUpdating}
           />
         </div>
       </main>
@@ -206,6 +212,7 @@ const AppContent = () => {
   const history = useHistory(auth.user);
   const toast = useToast();
   const darkMode = useDarkMode();
+  const profile = useProfile(auth.user);
 
   // Detectar recovery token e OAuth callback na URL
   useEffect(() => {
@@ -389,6 +396,37 @@ const AppContent = () => {
     toast.showSuccess('Transcrição carregada!');
   };
 
+  // Profile actions
+  const handleUpdateProfile = async (updates) => {
+    const result = await profile.updateProfile(updates);
+    if (result.success) {
+      toast.showSuccess(result.message);
+    } else {
+      toast.showError(result.error);
+    }
+    return result;
+  };
+
+  const handleUploadAvatar = async (file) => {
+    const result = await profile.uploadAvatar(file);
+    if (result.success) {
+      toast.showSuccess(result.message);
+    } else {
+      toast.showError(result.error);
+    }
+    return result;
+  };
+
+  const handleDeleteAvatar = async () => {
+    const result = await profile.deleteAvatar();
+    if (result.success) {
+      toast.showSuccess(result.message);
+    } else {
+      toast.showError(result.error);
+    }
+    return result;
+  };
+
   // Handler para começar a usar o app da landing page
   const handleGetStarted = () => {
     if (!auth.user) {
@@ -472,12 +510,17 @@ const AppContent = () => {
           <ProtectedRoute user={auth.user}>
             <ProfilePage
               auth={auth}
+              profile={profile.profile}
               history={history}
               toast={toast}
               darkMode={darkMode}
               authProps={authProps}
               handleLogout={handleLogout}
               loadTranscription={loadTranscription}
+              onUpdateProfile={handleUpdateProfile}
+              onUploadAvatar={handleUploadAvatar}
+              onDeleteAvatar={handleDeleteAvatar}
+              profileUpdating={profile.updating}
             />
           </ProtectedRoute>
         }

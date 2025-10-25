@@ -7,6 +7,7 @@ export { HeroSection } from './HeroSection';
 export { FileUpload } from './FileUpload';
 export { TranscriptionResult } from './TranscriptionResult';
 export { ProfileView } from './ProfileView';
+export { ProfileEditModal } from './ProfileEditModal';
 export { Footer } from './Footer';
 export { AudioPreview } from './AudioPreview';
 export { TranscriptionSkeleton } from './TranscriptionSkeleton';

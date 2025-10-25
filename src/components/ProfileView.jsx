@@ -1,14 +1,30 @@
-import React from 'react';
-import { User, Clock, FileAudio, ChevronRight, Trash2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { User, Clock, FileAudio, ChevronRight, Trash2, Edit2 } from 'lucide-react';
 import { formatDate } from '../utils/formatters';
+import { ProfileEditModal } from './ProfileEditModal';
+import { useNavigate } from 'react-router-dom';
 
 export const ProfileView = ({
   user,
+  profile,
   transcriptionHistory,
-  onViewChange,
   onLoadTranscription,
-  onDeleteFromHistory
+  onDeleteFromHistory,
+  onUpdateProfile,
+  onUploadAvatar,
+  onDeleteAvatar,
+  profileUpdating
 }) => {
+  const navigate = useNavigate();
+  const [showEditModal, setShowEditModal] = useState(false);
+
+  const handleSaveProfile = async (updates) => {
+    const result = await onUpdateProfile(updates);
+    if (result.success) {
+      setShowEditModal(false);
+    }
+    return result;
+  };
   return (
     <div>
       <div className="mb-12">
@@ -20,14 +36,44 @@ export const ProfileView = ({
 
       {/* User Info Card */}
       <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-8 mb-8">
-        <div className="flex items-center gap-4 mb-6">
-          <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
-            <User className="w-10 h-10" />
+        <div className="flex items-start justify-between mb-6">
+          <div className="flex items-center gap-4">
+            <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center overflow-hidden">
+              {profile?.avatar_url ? (
+                <img
+                  src={profile.avatar_url}
+                  alt="Avatar"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <User className="w-10 h-10" />
+              )}
+            </div>
+            <div>
+              <h3 className="text-2xl font-bold">
+                {profile?.full_name || user.email}
+              </h3>
+              {profile?.full_name && (
+                <p className="text-white/70 text-sm">{user.email}</p>
+              )}
+              {profile?.job_title && profile?.company && (
+                <p className="text-white/60 text-sm mt-1">
+                  {profile.job_title} • {profile.company}
+                </p>
+              )}
+              <p className="text-white/50 text-sm mt-1">
+                Membro desde {formatDate(user.created_at)}
+              </p>
+            </div>
           </div>
-          <div>
-            <h3 className="text-2xl font-bold">{user.email}</h3>
-            <p className="text-white/50">Membro desde {formatDate(user.created_at)}</p>
-          </div>
+
+          <button
+            onClick={() => setShowEditModal(true)}
+            className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-all flex items-center gap-2 text-sm"
+          >
+            <Edit2 className="w-4 h-4" />
+            Editar Perfil
+          </button>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -62,7 +108,7 @@ export const ProfileView = ({
             <FileAudio className="w-16 h-16 mx-auto mb-4 text-white/30" />
             <p className="text-white/50 text-lg">Nenhuma transcrição ainda</p>
             <button
-              onClick={() => onViewChange('home')}
+              onClick={() => navigate('/app')}
               className="mt-4 px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full hover:from-purple-600 hover:to-blue-600 transition-all"
             >
               Criar primeira transcrição
@@ -113,6 +159,18 @@ export const ProfileView = ({
           </div>
         )}
       </div>
+
+      {/* Profile Edit Modal */}
+      <ProfileEditModal
+        show={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        profile={profile}
+        userEmail={user.email}
+        onSave={handleSaveProfile}
+        onUploadAvatar={onUploadAvatar}
+        onDeleteAvatar={onDeleteAvatar}
+        loading={profileUpdating}
+      />
     </div>
   );
 };
