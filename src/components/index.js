@@ -16,3 +16,4 @@ export { LanguageSelector } from './LanguageSelector';
 export { TimestampedTranscription } from './TimestampedTranscription';
 export { DiarizationToggle } from './DiarizationToggle';
 export { ProtectedRoute } from './ProtectedRoute';
+export { Onboarding } from './Onboarding';
