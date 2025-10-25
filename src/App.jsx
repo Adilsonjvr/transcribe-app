@@ -15,7 +15,8 @@ import {
   LanguageSelector,
   TimestampedTranscription,
   DiarizationToggle,
-  ProtectedRoute
+  ProtectedRoute,
+  Onboarding
 } from './components';
 import { useAuth, useTranscription, useHistory, useToast, useDarkMode, useProfile } from './hooks';
 import { copyToClipboard, downloadFile, createTranscriptionJSON } from './utils/fileUtils';
@@ -38,6 +39,7 @@ const LandingPageRoute = ({ onGetStarted, authProps, toast }) => {
 // Componente da Página Principal (App)
 const AppPage = ({
   auth,
+  profile,
   transcription,
   history,
   toast,
@@ -50,7 +52,8 @@ const AppPage = ({
   handleFileSelect,
   handleUploadAndTranscribe,
   handleLogout,
-  loadTranscription
+  loadTranscription,
+  onCompleteOnboarding
 }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 dark:from-gray-900 dark:via-gray-800 dark:to-black text-white relative overflow-hidden transition-colors duration-500">
@@ -58,6 +61,7 @@ const AppPage = ({
 
       <Header
         user={auth.user}
+        profile={profile}
         onAuthClick={() => auth.setShowAuthModal(true)}
         onLogout={handleLogout}
         isDarkMode={darkMode.isDarkMode}
@@ -76,6 +80,13 @@ const AppPage = ({
           toast.showSuccess(message);
           setShowResetPasswordModal(false);
         }}
+      />
+
+      {/* Onboarding para novos usuários */}
+      <Onboarding
+        show={profile && !profile.onboarding_completed}
+        onComplete={onCompleteOnboarding}
+        onSkip={onCompleteOnboarding}
       />
 
       <main className="pt-32 pb-20 px-6 relative z-10">
@@ -167,6 +178,7 @@ const ProfilePage = ({ auth, profile, history, toast, darkMode, authProps, handl
 
       <Header
         user={auth.user}
+        profile={profile}
         onAuthClick={() => auth.setShowAuthModal(true)}
         onLogout={handleLogout}
         isDarkMode={darkMode.isDarkMode}
@@ -427,6 +439,14 @@ const AppContent = () => {
     return result;
   };
 
+  // Handler para completar onboarding
+  const handleCompleteOnboarding = async () => {
+    const result = await profile.completeOnboarding();
+    if (result.success) {
+      toast.showSuccess('Bem-vindo ao Transcribe! 🎉');
+    }
+  };
+
   // Handler para começar a usar o app da landing page
   const handleGetStarted = () => {
     if (!auth.user) {
@@ -485,6 +505,7 @@ const AppContent = () => {
           <ProtectedRoute user={auth.user}>
             <AppPage
               auth={auth}
+              profile={profile.profile}
               transcription={transcription}
               history={history}
               toast={toast}
@@ -498,6 +519,7 @@ const AppContent = () => {
               handleUploadAndTranscribe={handleUploadAndTranscribe}
               handleLogout={handleLogout}
               loadTranscription={loadTranscription}
+              onCompleteOnboarding={handleCompleteOnboarding}
             />
           </ProtectedRoute>
         }

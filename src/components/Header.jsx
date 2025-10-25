@@ -3,13 +3,18 @@ import { Link, useLocation } from 'react-router-dom';
 import { User, Zap, Home, Menu, X, LogOut } from 'lucide-react';
 import { DarkModeToggle } from './DarkModeToggle';
 
-export const Header = ({ user, onAuthClick, onLogout, isDarkMode, onToggleDarkMode }) => {
+export const Header = ({ user, profile, onAuthClick, onLogout, isDarkMode, onToggleDarkMode }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
 
   const closeMobileMenu = () => {
     setMobileMenuOpen(false);
   };
+
+  // Nome de exibição: nome completo ou email
+  const displayName = profile?.full_name || user?.email || 'Usuário';
+  // Primeiro nome apenas
+  const firstName = profile?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'Usuário';
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-xl border-b border-white/10">
@@ -61,8 +66,16 @@ export const Header = ({ user, onAuthClick, onLogout, isDarkMode, onToggleDarkMo
             {user ? (
               <>
                 <div className="hidden lg:flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full border border-white/20">
-                  <User className="w-4 h-4" />
-                  <span className="text-sm">{user.email}</span>
+                  {profile?.avatar_url ? (
+                    <img
+                      src={profile.avatar_url}
+                      alt={displayName}
+                      className="w-6 h-6 rounded-full object-cover"
+                    />
+                  ) : (
+                    <User className="w-4 h-4" />
+                  )}
+                  <span className="text-sm">{firstName}</span>
                 </div>
                 <button
                   onClick={onLogout}
@@ -140,8 +153,19 @@ export const Header = ({ user, onAuthClick, onLogout, isDarkMode, onToggleDarkMo
               <div className="my-2 border-t border-white/10" />
 
               <div className="px-4 py-2 text-sm text-white/50 flex items-center gap-2">
-                <User className="w-4 h-4" />
-                <span className="truncate">{user.email}</span>
+                {profile?.avatar_url ? (
+                  <img
+                    src={profile.avatar_url}
+                    alt={displayName}
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                ) : (
+                  <User className="w-4 h-4" />
+                )}
+                <div className="flex flex-col truncate">
+                  <span className="text-white font-medium">{displayName}</span>
+                  <span className="text-xs text-white/40 truncate">{user.email}</span>
+                </div>
               </div>
 
               <button
