@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { User, Zap, Home, Menu, X, LogOut } from 'lucide-react';
 import { DarkModeToggle } from './DarkModeToggle';
+import { Logo } from './Logo';
 
 export const Header = ({ user, profile, onAuthClick, onLogout, isDarkMode, onToggleDarkMode }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -21,15 +22,9 @@ export const Header = ({ user, profile, onAuthClick, onLogout, isDarkMode, onTog
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-blue-400 rounded-lg flex items-center justify-center">
-              <Zap className="w-6 h-6 text-white" />
-            </div>
-            <div className="hidden sm:block">
-              <h1 className="text-xl font-bold tracking-tight">TRANSCRIBE</h1>
-              <p className="text-xs text-white/50">Audio to Text AI</p>
-            </div>
-          </div>
+          <Link to="/" className="flex items-center">
+            <Logo size="medium" showText={true} animated={true} />
+          </Link>
 
           {/* Desktop Navigation */}
           {user && (

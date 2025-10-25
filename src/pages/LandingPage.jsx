@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { AnimatedBackground } from '../components/AnimatedBackground';
 import { Footer } from '../components/Footer';
+import { Logo } from '../components/Logo';
 
 export const LandingPage = ({ onGetStarted }) => {
   const [activeFaq, setActiveFaq] = useState(null);
@@ -28,19 +29,11 @@ export const LandingPage = ({ onGetStarted }) => {
       {/* Header Simples */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-xl border-b border-white/10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-blue-400 rounded-lg flex items-center justify-center">
-              <Zap className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold tracking-tight">TRANSCRIBE</h1>
-              <p className="text-xs text-white/50">IA de Áudio para Texto</p>
-            </div>
-          </div>
+          <Logo size="medium" showText={true} animated={true} />
 
           <button
             onClick={onGetStarted}
-            className="px-6 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-600 transition-all"
+            className="px-6 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-600 transition-all hover-lift hover-glow shadow-lg"
           >
             Começar Agora
           </button>

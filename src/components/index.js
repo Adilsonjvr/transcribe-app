@@ -17,3 +17,4 @@ export { TimestampedTranscription } from './TimestampedTranscription';
 export { DiarizationToggle } from './DiarizationToggle';
 export { ProtectedRoute } from './ProtectedRoute';
 export { Onboarding } from './Onboarding';
+export { Logo } from './Logo';
