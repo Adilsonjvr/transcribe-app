@@ -207,17 +207,37 @@ const AppContent = () => {
   const toast = useToast();
   const darkMode = useDarkMode();
 
-  // Detectar recovery token na URL (quando usuário clica no link de reset de senha)
+  // Detectar recovery token e OAuth callback na URL
   useEffect(() => {
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
     const type = hashParams.get('type');
+    const accessToken = hashParams.get('access_token');
 
     if (type === 'recovery') {
       setShowResetPasswordModal(true);
       navigate('/app');
       window.history.replaceState({}, document.title, window.location.pathname);
     }
-  }, [navigate]);
+
+    // Se houver access_token no hash, é um callback do OAuth
+    if (accessToken && auth.user) {
+      toast.showSuccess('Login realizado com sucesso!');
+      navigate('/app');
+      // Limpar hash da URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, [navigate, auth.user, toast]);
+
+  // Redirecionar para /app quando usuário fizer login (incluindo OAuth)
+  useEffect(() => {
+    if (auth.user && !auth.loading && location.pathname === '/') {
+      // Pequeno delay para garantir que o usuário foi carregado completamente
+      const timer = setTimeout(() => {
+        navigate('/app');
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [auth.user, auth.loading, location.pathname, navigate]);
 
   // Auth handlers
   const handleAuth = async () => {
