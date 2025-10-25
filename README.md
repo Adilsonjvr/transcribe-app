@@ -25,20 +25,69 @@ Plataforma moderna e profissional de transcrição de áudio com **Speaker Diari
 - 🌍 **Múltiplos idiomas** - PT, EN, ES, FR, DE, IT + auto-detecção
 - ⏱️ **Timestamps precisos** - Navegação sincronizada com player de áudio
 - 📝 **Editor integrado** - Edite a transcrição em tempo real
-- 💾 **Exports** - TXT e JSON com timestamps e speakers
+- 💾 **Exports Avançados** - TXT, JSON, PDF e DOCX com timestamps e speakers
+- 💿 **Persistência permanente** - Banco de dados Supabase com backup automático
+- 🔄 **Migração automática** - Dados do localStorage migrados para a nuvem
 
 ### 👤 Autenticação e Usuários
-- 🔐 **Autenticação real** - Supabase Auth (Email/Password)
-- 👥 **Perfis de usuário** - Dados persistentes
-- 📊 **Histórico** - Todas as transcrições salvas
-- 🔄 **Sessões** - Login automático em múltiplos dispositivos
+- 🔐 **Autenticação completa** - Supabase Auth (Email/Password + OAuth Google)
+- 👥 **Perfis expandidos** - Nome completo, empresa, cargo, telefone, avatar
+- 📊 **Histórico persistente** - Todas as transcrições salvas no Supabase
+- 🔄 **Multi-device sync** - Acesse suas transcrições de qualquer dispositivo
+- 🎯 **Onboarding guiado** - Experiência inicial para novos usuários
 
 ### 🎨 UX/UI
 - 🌓 **Dark Mode** - Tema escuro/claro com preferência do sistema
-- 📱 **Responsivo** - Design adaptativo mobile-first
-- 🎨 **Design moderno** - Gradientes, glassmorphism, animações
+- 📱 **Responsivo** - Design adaptativo mobile-first otimizado
+- 🎨 **Design moderno** - Gradientes animados, glassmorphism, micro-interações
+- ✨ **Animações fluidas** - Float, pulse, slide, bounce, scale effects
+- 🎭 **Logo profissional** - Componente animado com gradiente e sparkle
 - ♿ **Acessível** - ARIA labels, navegação por teclado
 - 🎯 **Loading states** - Feedback visual em todas as ações
+- 🌐 **100% Português** - Interface completa traduzida incluindo landing page
+
+---
+
+## 🆕 Atualizações Recentes
+
+### v2.0 - Major Update (Outubro 2024)
+
+#### 🎨 UX/UI Completo
+- Interface 100% traduzida para Português (incluindo Landing Page)
+- Logo profissional animado com gradientes e sparkles
+- 10+ animações CSS customizadas (float, pulse, slide, bounce, wiggle)
+- Glassmorphism e efeitos modernos em todos os componentes
+- Hover effects e micro-interações
+
+#### 💾 Persistência de Dados
+- Migração de localStorage para PostgreSQL (Supabase)
+- Tabela `transcriptions` com 16 campos
+- Migração automática de dados antigos
+- Backup automático e sincronização multi-device
+- Row Level Security (RLS) habilitado
+
+#### 👤 Perfis Expandidos
+- Campos adicionais: nome completo, empresa, cargo, telefone
+- Upload de avatar com Supabase Storage
+- Sistema de preferências do usuário
+- Onboarding tracking
+
+#### 🔐 OAuth Google
+- Login social com Google implementado
+- Fluxo de autenticação simplificado
+- Perfil automático a partir dos dados do Google
+
+#### 📄 Exports Avançados
+- PDF com formatação profissional (jsPDF)
+- DOCX com estilos e parágrafos (docx)
+- JSON e TXT já existentes
+- Suporte a timestamps e speakers em todos os formatos
+
+#### 🔧 Melhorias Técnicas
+- React Router 6.28 implementado
+- Navegação corrigida (home acessível quando logado)
+- Componentes refatorados e otimizados
+- Performance melhorada
 
 ---
 
@@ -46,13 +95,16 @@ Plataforma moderna e profissional de transcrição de áudio com **Speaker Diari
 
 | Categoria | Tecnologia |
 |-----------|------------|
-| **Frontend** | React 18.3 + Vite 7.1 |
-| **Styling** | Tailwind CSS 3.4 |
+| **Frontend** | React 18.3 + Vite 7.1 + React Router 6.28 |
+| **Styling** | Tailwind CSS 3.4 + Custom CSS Animations |
 | **Backend** | Supabase (Edge Functions + PostgreSQL) |
+| **Database** | PostgreSQL com RLS (Row Level Security) |
+| **Storage** | Supabase Storage (avatars e áudios) |
 | **AI/ML** | AssemblyAI API (Transcrição + Diarization) |
-| **Auth** | Supabase Auth |
+| **Auth** | Supabase Auth (Email/Password + OAuth Google) |
+| **Export** | jsPDF (PDF) + docx (DOCX) |
 | **Icons** | Lucide React |
-| **Hosting** | Vercel (recomendado) |
+| **Hosting** | Vercel (Frontend) + Supabase (Backend) |
 
 ---
 
@@ -88,13 +140,25 @@ npm run dev
    - Copie URL e Anon Key
    - Configure no `.env`
 
-2. **AssemblyAI:**
+2. **Database:**
+   - Execute os SQL scripts em ordem:
+     - `user_profiles_fixed.sql` (perfis de usuário)
+     - `FIX_TRANSCRIPTIONS.sql` (tabela de transcrições)
+     - `storage_policies.sql` (políticas de storage)
+   - Ver: [Database Setup](./.docs/database/README.md)
+
+3. **OAuth Google (Opcional):**
+   - Configure OAuth no Google Cloud Console
+   - Adicione credenciais no Supabase Auth
+   - Ver: [OAuth Setup](./.docs/development/OAUTH_SETUP.md)
+
+4. **AssemblyAI:**
    - Crie conta em https://www.assemblyai.com
    - Copie API Key do dashboard
    - Adicione como Secret no Supabase Edge Functions
    - Ver: [Guia de Configuração](./.docs/development/ASSEMBLYAI_API_KEY_SETUP.md)
 
-3. **Edge Function:**
+5. **Edge Function:**
    - Deploy da função `dynamic-processor`
    - Ver: [Guia de Deploy](./.docs/deployment/EDGE_FUNCTION_GUIDE.md)
 
@@ -130,6 +194,11 @@ VITE_SUPABASE_ANON_KEY=sua-anon-key
 - **[Speaker Diarization](./SPEAKER_DIARIZATION.md)** - Guia completo da funcionalidade
 - **[Próximos Passos](./PROXIMOS_PASSOS.md)** - Roadmap de funcionalidades
 
+### 💾 Database
+- **[Database Setup](./.docs/database/README.md)** - Configuração completa do banco
+- [Transcriptions Setup](./.docs/database/TRANSCRIPTIONS_SETUP.md) - Guia detalhado
+- [Setup Guide](./.docs/database/SETUP_GUIDE.md) - Guia geral
+
 ### 🏗️ Arquitetura
 - [Visão Geral](./.docs/technical/ARCHITECTURE.md)
 - [Estrutura do Projeto](./.docs/technical/PROJECT_STRUCTURE.md)
@@ -139,6 +208,7 @@ VITE_SUPABASE_ANON_KEY=sua-anon-key
 - [Guia do Desenvolvedor](./.docs/development/DEVELOPER_GUIDE.md)
 - [Debugging](./.docs/development/DEBUG_INSTRUCTIONS.md)
 - [API Key Setup](./.docs/development/ASSEMBLYAI_API_KEY_SETUP.md)
+- [OAuth Setup](./.docs/development/OAUTH_SETUP.md)
 
 ### 🚀 Deploy
 - [Edge Functions](./.docs/deployment/EDGE_FUNCTION_GUIDE.md)
@@ -189,12 +259,17 @@ npm run lint         # ESLint
 
 ## 📊 Estatísticas do Projeto
 
-- **Componentes:** 15+ componentes reutilizáveis
-- **Hooks:** 6 custom hooks
-- **Serviços:** 3 serviços especializados
+- **Componentes:** 20+ componentes reutilizáveis (incluindo Logo, modais, cards)
+- **Hooks:** 8 custom hooks (useAuth, useProfile, useHistory, useTranscription, etc)
+- **Serviços:** 5 serviços especializados (API, Storage, Auth, Profile, Transcription)
+- **Animações CSS:** 10+ animações customizadas (float, pulse, slide, bounce, scale)
+- **Exports:** 4 formatos (TXT, JSON, PDF, DOCX)
+- **Idiomas suportados:** 6+ (PT-BR, EN, ES, FR, DE, IT)
+- **Database:** PostgreSQL com RLS + auto-migration
 - **Redução de complexidade:** 75% comparado à versão inicial
-- **Tamanho médio por arquivo:** ~60 linhas
-- **Cobertura de funcionalidades:** 95%
+- **Tamanho médio por arquivo:** ~80 linhas
+- **Cobertura de funcionalidades:** 98%
+- **Interface:** 100% em Português
 
 ---
 
