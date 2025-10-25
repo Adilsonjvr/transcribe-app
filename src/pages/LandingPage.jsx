@@ -34,7 +34,7 @@ export const LandingPage = ({ onGetStarted }) => {
             </div>
             <div>
               <h1 className="text-xl font-bold tracking-tight">TRANSCRIBE</h1>
-              <p className="text-xs text-white/50">Audio to Text AI</p>
+              <p className="text-xs text-white/50">IA de Áudio para Texto</p>
             </div>
           </div>
 
@@ -42,7 +42,7 @@ export const LandingPage = ({ onGetStarted }) => {
             onClick={onGetStarted}
             className="px-6 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-600 transition-all"
           >
-            Get Started
+            Começar Agora
           </button>
         </div>
       </header>
@@ -60,21 +60,21 @@ export const LandingPage = ({ onGetStarted }) => {
             {/* Main Title com Gradient Animado */}
             <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-6 leading-tight">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-blue-200 animate-gradient">
-                The AI-powered
+                A Plataforma de
               </span>
               <br />
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 animate-gradient-slow">
-                Speech-to-Text
+                Transcrição de Áudio
               </span>
               <br />
-              <span className="text-white/90">Platform</span>
+              <span className="text-white/90">Mais Inteligente</span>
             </h1>
 
             <p className="text-xl md:text-2xl text-white/70 mb-12 max-w-3xl mx-auto leading-relaxed">
-              Transform your audio into accurate transcriptions with{' '}
-              <span className="text-purple-300 font-semibold">speaker identification</span>,{' '}
-              <span className="text-blue-300 font-semibold">100+ languages</span>, and{' '}
-              <span className="text-pink-300 font-semibold">timestamps</span> in seconds.
+              Transforme seus áudios em transcrições precisas com{' '}
+              <span className="text-purple-300 font-semibold">identificação de palestrantes</span>,{' '}
+              <span className="text-blue-300 font-semibold">100+ idiomas</span> e{' '}
+              <span className="text-pink-300 font-semibold">timestamps</span> em segundos.
             </p>
 
             {/* CTA Buttons */}
@@ -83,13 +83,13 @@ export const LandingPage = ({ onGetStarted }) => {
                 onClick={onGetStarted}
                 className="group px-8 py-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold rounded-full hover:from-purple-600 hover:to-blue-600 transition-all flex items-center gap-2 shadow-lg shadow-purple-500/50"
               >
-                Start Transcribing Free
+                Começar a Transcrever Grátis
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
 
               <button className="px-8 py-4 border-2 border-white/20 rounded-full hover:bg-white/10 transition-all flex items-center gap-2 backdrop-blur-sm">
                 <Play className="w-5 h-5" />
-                Watch Demo
+                Ver Demonstração
               </button>
             </div>
 
@@ -99,25 +99,25 @@ export const LandingPage = ({ onGetStarted }) => {
                 <div className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 mb-2">
                   95%
                 </div>
-                <div className="text-sm text-white/60">Accuracy Rate</div>
+                <div className="text-sm text-white/60">Taxa de Precisão</div>
               </div>
               <div className="text-center">
                 <div className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 mb-2">
                   100+
                 </div>
-                <div className="text-sm text-white/60">Languages</div>
+                <div className="text-sm text-white/60">Idiomas</div>
               </div>
               <div className="text-center">
                 <div className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400 mb-2">
                   &lt;5s
                 </div>
-                <div className="text-sm text-white/60">Processing Time</div>
+                <div className="text-sm text-white/60">Tempo de Processamento</div>
               </div>
               <div className="text-center">
                 <div className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-400 mb-2">
                   24/7
                 </div>
-                <div className="text-sm text-white/60">Available</div>
+                <div className="text-sm text-white/60">Disponível</div>
               </div>
             </div>
           </div>
@@ -128,9 +128,9 @@ export const LandingPage = ({ onGetStarted }) => {
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-black mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400">
-                Powerful Features
+                Recursos Poderosos
               </h2>
-              <p className="text-xl text-white/70">Everything you need for perfect transcriptions</p>
+              <p className="text-xl text-white/70">Tudo que você precisa para transcrições perfeitas</p>
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -139,9 +139,9 @@ export const LandingPage = ({ onGetStarted }) => {
                 <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                   <Users className="w-7 h-7 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold mb-3">Speaker Diarization</h3>
+                <h3 className="text-2xl font-bold mb-3">Identificação de Palestrantes</h3>
                 <p className="text-white/70 leading-relaxed">
-                  Automatically identify and separate different speakers in your audio with AI-powered precision.
+                  Identifique e separe automaticamente diferentes palestrantes no seu áudio com precisão de IA.
                 </p>
               </div>
 
@@ -150,9 +150,9 @@ export const LandingPage = ({ onGetStarted }) => {
                 <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                   <Clock className="w-7 h-7 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold mb-3">Precise Timestamps</h3>
+                <h3 className="text-2xl font-bold mb-3">Timestamps Precisos</h3>
                 <p className="text-white/70 leading-relaxed">
-                  Get accurate timestamps for every segment, perfect for navigation and reference.
+                  Obtenha timestamps precisos para cada segmento, perfeito para navegação e referência.
                 </p>
               </div>
 
@@ -161,9 +161,9 @@ export const LandingPage = ({ onGetStarted }) => {
                 <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                   <Languages className="w-7 h-7 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold mb-3">100+ Languages</h3>
+                <h3 className="text-2xl font-bold mb-3">100+ Idiomas</h3>
                 <p className="text-white/70 leading-relaxed">
-                  Support for over 100 languages with automatic language detection and high accuracy.
+                  Suporte para mais de 100 idiomas com detecção automática e alta precisão.
                 </p>
               </div>
 
@@ -172,9 +172,9 @@ export const LandingPage = ({ onGetStarted }) => {
                 <div className="w-14 h-14 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                   <Zap className="w-7 h-7 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold mb-3">Lightning Fast</h3>
+                <h3 className="text-2xl font-bold mb-3">Ultra Rápido</h3>
                 <p className="text-white/70 leading-relaxed">
-                  Process your audio files in seconds with our optimized cloud infrastructure.
+                  Processe seus arquivos de áudio em segundos com nossa infraestrutura otimizada na nuvem.
                 </p>
               </div>
 
@@ -183,9 +183,9 @@ export const LandingPage = ({ onGetStarted }) => {
                 <div className="w-14 h-14 bg-gradient-to-br from-red-500 to-pink-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                   <FileText className="w-7 h-7 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold mb-3">Multiple Formats</h3>
+                <h3 className="text-2xl font-bold mb-3">Múltiplos Formatos</h3>
                 <p className="text-white/70 leading-relaxed">
-                  Export your transcriptions as TXT, JSON, PDF, or DOCX with one click.
+                  Exporte suas transcrições como TXT, JSON, PDF ou DOCX com um clique.
                 </p>
               </div>
 
@@ -194,9 +194,9 @@ export const LandingPage = ({ onGetStarted }) => {
                 <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                   <Shield className="w-7 h-7 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold mb-3">Secure & Private</h3>
+                <h3 className="text-2xl font-bold mb-3">Seguro e Privado</h3>
                 <p className="text-white/70 leading-relaxed">
-                  Your data is encrypted and secure. We never share or sell your information.
+                  Seus dados são criptografados e seguros. Nunca compartilhamos ou vendemos suas informações.
                 </p>
               </div>
             </div>
@@ -211,49 +211,49 @@ export const LandingPage = ({ onGetStarted }) => {
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-black mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400">
-                Frequently Asked Questions
+                Perguntas Frequentes
               </h2>
             </div>
 
             <div className="space-y-4">
               <FAQItem
-                question="How accurate is the transcription?"
-                answer="Our AI-powered transcription service achieves up to 95% accuracy using AssemblyAI's state-of-the-art models. Accuracy may vary based on audio quality, accents, and background noise."
+                question="Qual a precisão da transcrição?"
+                answer="Nosso serviço de transcrição com IA atinge até 95% de precisão usando os modelos de última geração da AssemblyAI. A precisão pode variar com base na qualidade do áudio, sotaques e ruído de fundo."
                 isActive={activeFaq === 0}
                 onClick={() => setActiveFaq(activeFaq === 0 ? null : 0)}
               />
 
               <FAQItem
-                question="What audio formats are supported?"
-                answer="We support all common audio formats including MP3, WAV, M4A, AAC, OGG, FLAC, and more. Maximum file size is 500MB."
+                question="Quais formatos de áudio são suportados?"
+                answer="Suportamos todos os formatos de áudio comuns incluindo MP3, WAV, M4A, AAC, OGG, FLAC e mais. O tamanho máximo do arquivo é 500MB."
                 isActive={activeFaq === 1}
                 onClick={() => setActiveFaq(activeFaq === 1 ? null : 1)}
               />
 
               <FAQItem
-                question="How long does transcription take?"
-                answer="Most transcriptions are completed in under 5 seconds. Longer files may take proportionally more time, but we optimize for speed without sacrificing quality."
+                question="Quanto tempo leva a transcrição?"
+                answer="A maioria das transcrições é concluída em menos de 5 segundos. Arquivos mais longos podem levar proporcionalmente mais tempo, mas otimizamos para velocidade sem sacrificar a qualidade."
                 isActive={activeFaq === 2}
                 onClick={() => setActiveFaq(activeFaq === 2 ? null : 2)}
               />
 
               <FAQItem
-                question="Can I try it for free?"
-                answer="Yes! We offer a free tier with 100 minutes of transcription per month. No credit card required to start."
+                question="Posso experimentar gratuitamente?"
+                answer="Sim! Oferecemos um plano gratuito com 100 minutos de transcrição por mês. Não é necessário cartão de crédito para começar."
                 isActive={activeFaq === 3}
                 onClick={() => setActiveFaq(activeFaq === 3 ? null : 3)}
               />
 
               <FAQItem
-                question="What languages are supported?"
-                answer="We support over 100 languages including English, Spanish, French, German, Portuguese, Chinese, Japanese, Korean, and many more. Automatic language detection is also available."
+                question="Quais idiomas são suportados?"
+                answer="Suportamos mais de 100 idiomas incluindo Inglês, Espanhol, Francês, Alemão, Português, Chinês, Japonês, Coreano e muitos mais. Detecção automática de idioma também está disponível."
                 isActive={activeFaq === 4}
                 onClick={() => setActiveFaq(activeFaq === 4 ? null : 4)}
               />
 
               <FAQItem
-                question="Is my data secure?"
-                answer="Absolutely. All data is encrypted in transit and at rest. We follow industry best practices for security and never share your data with third parties."
+                question="Meus dados estão seguros?"
+                answer="Absolutamente. Todos os dados são criptografados em trânsito e em repouso. Seguimos as melhores práticas de segurança da indústria e nunca compartilhamos seus dados com terceiros."
                 isActive={activeFaq === 5}
                 onClick={() => setActiveFaq(activeFaq === 5 ? null : 5)}
               />
@@ -266,16 +266,16 @@ export const LandingPage = ({ onGetStarted }) => {
           <div className="absolute inset-0 bg-black/20" />
           <div className="max-w-4xl mx-auto text-center relative z-10">
             <h2 className="text-4xl md:text-5xl font-black mb-6">
-              Ready to Transform Your Audio?
+              Pronto para Transformar seu Áudio?
             </h2>
             <p className="text-xl mb-8 text-white/90">
-              Start transcribing today with our AI-powered platform
+              Comece a transcrever hoje com nossa plataforma de IA
             </p>
             <button
               onClick={onGetStarted}
               className="px-12 py-5 bg-white text-purple-600 font-bold rounded-full hover:bg-gray-100 transition-all text-lg shadow-2xl"
             >
-              Get Started Free
+              Começar Gratuitamente
             </button>
           </div>
         </section>
@@ -290,50 +290,50 @@ export const LandingPage = ({ onGetStarted }) => {
 const PricingSection = ({ onGetStarted }) => {
   const plans = [
     {
-      name: 'Free',
-      price: '$0',
-      period: 'forever',
-      description: 'Perfect for trying out our service',
+      name: 'Gratuito',
+      price: 'R$0',
+      period: 'para sempre',
+      description: 'Perfeito para experimentar nosso serviço',
       features: [
-        '100 minutes/month',
-        'Basic transcription',
-        'Auto language detection',
-        'Export to TXT & JSON',
-        'Email support'
+        '100 minutos/mês',
+        'Transcrição básica',
+        'Detecção automática de idioma',
+        'Exportar para TXT e JSON',
+        'Suporte por email'
       ],
-      cta: 'Start Free',
+      cta: 'Começar Grátis',
       highlighted: false
     },
     {
       name: 'Pro',
-      price: '$19',
-      period: 'per month',
-      description: 'For professionals and businesses',
+      price: 'R$79',
+      period: 'por mês',
+      description: 'Para profissionais e empresas',
       features: [
-        '1,000 minutes/month',
-        'Speaker diarization',
-        'Timestamp precision',
-        'All export formats (PDF, DOCX)',
-        'Priority support',
-        'API access'
+        '1.000 minutos/mês',
+        'Identificação de palestrantes',
+        'Timestamps precisos',
+        'Todos formatos (PDF, DOCX)',
+        'Suporte prioritário',
+        'Acesso à API'
       ],
-      cta: 'Get Started',
+      cta: 'Começar Agora',
       highlighted: true
     },
     {
       name: 'Enterprise',
-      price: 'Custom',
-      period: 'contact us',
-      description: 'For large teams and organizations',
+      price: 'Customizado',
+      period: 'entre em contato',
+      description: 'Para grandes equipes e organizações',
       features: [
-        'Unlimited minutes',
-        'Custom models',
-        'Dedicated support',
-        'SLA guarantee',
-        'On-premise options',
-        'Advanced analytics'
+        'Minutos ilimitados',
+        'Modelos customizados',
+        'Suporte dedicado',
+        'Garantia de SLA',
+        'Opções on-premise',
+        'Analytics avançado'
       ],
-      cta: 'Contact Sales',
+      cta: 'Falar com Vendas',
       highlighted: false
     }
   ];
@@ -343,9 +343,9 @@ const PricingSection = ({ onGetStarted }) => {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-black mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400">
-            Simple, Transparent Pricing
+            Preços Simples e Transparentes
           </h2>
-          <p className="text-xl text-white/70">Choose the plan that fits your needs</p>
+          <p className="text-xl text-white/70">Escolha o plano que se adapta às suas necessidades</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -360,7 +360,7 @@ const PricingSection = ({ onGetStarted }) => {
             >
               {plan.highlighted && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-yellow-400 text-black text-sm font-bold rounded-full">
-                  Most Popular
+                  Mais Popular
                 </div>
               )}
 
@@ -401,9 +401,9 @@ const PricingSection = ({ onGetStarted }) => {
           <div className="flex items-start gap-3">
             <BarChart3 className="w-6 h-6 text-blue-400 flex-shrink-0 mt-1" />
             <div>
-              <h4 className="font-bold text-lg mb-2">Fair & Transparent Pricing</h4>
+              <h4 className="font-bold text-lg mb-2">Preços Justos e Transparentes</h4>
               <p className="text-white/70 leading-relaxed">
-                Our pricing is based on actual usage of AssemblyAI's powerful API. We add a small service fee to cover infrastructure and provide you with the best transcription experience. No hidden fees, no surprises.
+                Nossos preços são baseados no uso real da poderosa API da AssemblyAI. Adicionamos uma pequena taxa de serviço para cobrir infraestrutura e fornecer a melhor experiência de transcrição. Sem taxas ocultas, sem surpresas.
               </p>
             </div>
           </div>
