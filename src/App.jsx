@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import {
   Header,
   AuthModal,
@@ -13,25 +14,189 @@ import {
   TranscriptionSkeleton,
   LanguageSelector,
   TimestampedTranscription,
-  DiarizationToggle
+  DiarizationToggle,
+  ProtectedRoute
 } from './components';
 import { useAuth, useTranscription, useHistory, useToast, useDarkMode } from './hooks';
 import { copyToClipboard, downloadFile, createTranscriptionJSON } from './utils/fileUtils';
 import { exportToPDF, exportToDOCX } from './utils/exportUtils';
 import { LandingPage } from './pages/LandingPage';
 
-const App = () => {
-  // Carregar view salva ou mostrar landing page
-  const getSavedView = () => {
-    try {
-      const saved = localStorage.getItem('transcribe_current_view');
-      return saved || 'landing';
-    } catch {
-      return 'landing';
-    }
-  };
+// Componente da Landing Page com navegação
+const LandingPageRoute = ({ onGetStarted, authProps, toast }) => {
+  return (
+    <>
+      <LandingPage onGetStarted={onGetStarted} />
+      <AuthModal {...authProps} />
+      <ToastMessage message={toast.error} type="error" />
+      <ToastMessage message={toast.success} type="success" />
+    </>
+  );
+};
 
-  const [currentView, setCurrentView] = useState(getSavedView());
+// Componente da Página Principal (App)
+const AppPage = ({
+  auth,
+  transcription,
+  history,
+  toast,
+  darkMode,
+  authProps,
+  showResetPasswordModal,
+  setShowResetPasswordModal,
+  handleCopy,
+  handleDownload,
+  handleFileSelect,
+  handleUploadAndTranscribe,
+  handleLogout,
+  loadTranscription
+}) => {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 dark:from-gray-900 dark:via-gray-800 dark:to-black text-white relative overflow-hidden transition-colors duration-500">
+      <AnimatedBackground />
+
+      <Header
+        user={auth.user}
+        onAuthClick={() => auth.setShowAuthModal(true)}
+        onLogout={handleLogout}
+        isDarkMode={darkMode.isDarkMode}
+        onToggleDarkMode={darkMode.toggleDarkMode}
+      />
+
+      <ToastMessage message={toast.error} type="error" />
+      <ToastMessage message={toast.success} type="success" />
+
+      <AuthModal {...authProps} />
+
+      <ResetPasswordModal
+        show={showResetPasswordModal}
+        onClose={() => setShowResetPasswordModal(false)}
+        onSuccess={(message) => {
+          toast.showSuccess(message);
+          setShowResetPasswordModal(false);
+        }}
+      />
+
+      <main className="pt-32 pb-20 px-6 relative z-10">
+        <div className="max-w-5xl mx-auto">
+          {!transcription.transcription && !transcription.file && <HeroSection />}
+
+          {!transcription.transcription && !transcription.isTranscribing && (
+            <>
+              {/* Seletor de Idioma */}
+              <div className="mb-6">
+                <LanguageSelector
+                  selectedLanguage={transcription.language}
+                  onLanguageChange={transcription.setLanguage}
+                  disabled={transcription.isUploading || transcription.isTranscribing}
+                />
+              </div>
+
+              {/* Toggle de Diarization (Speaker Identification) */}
+              <div className="mb-8">
+                <DiarizationToggle
+                  enabled={transcription.diarizationEnabled}
+                  onToggle={transcription.setDiarizationEnabled}
+                  disabled={transcription.isUploading || transcription.isTranscribing}
+                />
+              </div>
+
+              <FileUpload
+                file={transcription.file}
+                isDragging={transcription.isDragging}
+                isUploading={transcription.isUploading}
+                isTranscribing={transcription.isTranscribing}
+                uploadProgress={transcription.uploadProgress}
+                onFileSelect={handleFileSelect}
+                onDragOver={transcription.handleDragOver}
+                onDragLeave={transcription.handleDragLeave}
+                onDrop={transcription.handleDrop}
+                onUploadAndTranscribe={handleUploadAndTranscribe}
+              />
+            </>
+          )}
+
+          {transcription.isTranscribing && !transcription.transcription && (
+            <TranscriptionSkeleton progress={Math.round(transcription.transcriptionProgress)} />
+          )}
+
+          {transcription.transcription && (
+            <>
+              {/* Se tiver segmentos com timestamps, usar componente apropriado */}
+              {transcription.segments && transcription.segments.length > 0 ? (
+                <TimestampedTranscription
+                  segments={transcription.segments}
+                  onCopy={handleCopy}
+                  onDownloadTxt={() => handleDownload('txt')}
+                  onDownloadJson={() => handleDownload('json')}
+                  onDownloadPdf={() => handleDownload('pdf')}
+                  onDownloadDocx={() => handleDownload('docx')}
+                  onNewTranscription={transcription.handleNewTranscription}
+                  audioFile={transcription.file}
+                />
+              ) : (
+                <TranscriptionResult
+                  transcription={transcription.transcription}
+                  wordCount={transcription.wordCount}
+                  charCount={transcription.charCount}
+                  onTranscriptionChange={transcription.setTranscription}
+                  onCopy={handleCopy}
+                  onDownloadTxt={() => handleDownload('txt')}
+                  onDownloadJson={() => handleDownload('json')}
+                  onDownloadPdf={() => handleDownload('pdf')}
+                  onDownloadDocx={() => handleDownload('docx')}
+                  onNewTranscription={transcription.handleNewTranscription}
+                />
+              )}
+            </>
+          )}
+        </div>
+      </main>
+
+      <Footer />
+    </div>
+  );
+};
+
+// Componente da Página de Perfil
+const ProfilePage = ({ auth, history, toast, darkMode, authProps, handleLogout, loadTranscription }) => {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 dark:from-gray-900 dark:via-gray-800 dark:to-black text-white relative overflow-hidden transition-colors duration-500">
+      <AnimatedBackground />
+
+      <Header
+        user={auth.user}
+        onAuthClick={() => auth.setShowAuthModal(true)}
+        onLogout={handleLogout}
+        isDarkMode={darkMode.isDarkMode}
+        onToggleDarkMode={darkMode.toggleDarkMode}
+      />
+
+      <ToastMessage message={toast.error} type="error" />
+      <ToastMessage message={toast.success} type="success" />
+
+      <AuthModal {...authProps} />
+
+      <main className="pt-32 pb-20 px-6 relative z-10">
+        <div className="max-w-5xl mx-auto">
+          <ProfileView
+            user={auth.user}
+            transcriptionHistory={history.transcriptionHistory}
+            onLoadTranscription={loadTranscription}
+            onDeleteFromHistory={history.deleteFromHistory}
+          />
+        </div>
+      </main>
+
+      <Footer />
+    </div>
+  );
+};
+
+// Componente Principal com toda a lógica
+const AppContent = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
   const [authError, setAuthError] = useState('');
 
@@ -42,52 +207,30 @@ const App = () => {
   const toast = useToast();
   const darkMode = useDarkMode();
 
-  // Salvar view atual no localStorage
-  useEffect(() => {
-    try {
-      localStorage.setItem('transcribe_current_view', currentView);
-    } catch (error) {
-      console.error('Erro ao salvar view:', error);
-    }
-  }, [currentView]);
-
-  // Se usuário não está logado e não está na landing, redirecionar
-  useEffect(() => {
-    if (!auth.user && currentView !== 'landing') {
-      setCurrentView('landing');
-    }
-  }, [auth.user, currentView]);
-
   // Detectar recovery token na URL (quando usuário clica no link de reset de senha)
   useEffect(() => {
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
     const type = hashParams.get('type');
 
     if (type === 'recovery') {
-      // Usuário veio de um link de reset de senha
       setShowResetPasswordModal(true);
-      setCurrentView('home');
-      // Limpar hash da URL
+      navigate('/app');
       window.history.replaceState({}, document.title, window.location.pathname);
     }
-  }, []);
+  }, [navigate]);
 
   // Auth handlers
   const handleAuth = async () => {
     try {
-      setAuthError(''); // Limpar erro anterior
-      console.log('[App] Iniciando autenticação...');
+      setAuthError('');
       const result = await auth.handleAuth();
-      console.log('[App] Resultado da autenticação:', result);
       toast.showSuccess(result.message);
 
       // Após login bem-sucedido, redirecionar para o app
-      if (result.user && currentView === 'landing') {
-        setCurrentView('home');
+      if (result.user && location.pathname === '/') {
+        navigate('/app');
       }
     } catch (err) {
-      console.error('[App] Erro na autenticação:', err);
-      console.error('[App] Mensagem do erro:', err.message);
       setAuthError(err.message || 'Erro ao autenticar');
     }
   };
@@ -96,7 +239,7 @@ const App = () => {
     try {
       const message = await auth.handleLogout();
       toast.showSuccess(message);
-      setCurrentView('home');
+      navigate('/');
     } catch (err) {
       toast.showError(err.message || 'Erro ao fazer logout');
     }
@@ -178,7 +321,6 @@ const App = () => {
       let extension = 'txt';
 
       if (format === 'json') {
-        // Se tiver timestamps, incluir no JSON
         if (transcription.segments && transcription.segments.length > 0) {
           content = JSON.stringify({
             text: transcription.transcription,
@@ -198,7 +340,6 @@ const App = () => {
         mimeType = 'application/json';
         extension = 'json';
       } else if (format === 'txt') {
-        // Se tiver timestamps, incluir no TXT
         if (transcription.segments && transcription.segments.length > 0) {
           content = transcription.segments.map((seg) => {
             const timestamp = formatTimestamp(seg.start);
@@ -224,206 +365,116 @@ const App = () => {
   // History actions
   const loadTranscription = (item) => {
     transcription.setTranscription(item.transcription);
-    setCurrentView('home');
+    navigate('/app');
     toast.showSuccess('Transcrição carregada!');
   };
 
   // Handler para começar a usar o app da landing page
   const handleGetStarted = () => {
     if (!auth.user) {
-      // Se não estiver logado, apenas abre o modal (mantém na landing)
       auth.setShowAuthModal(true);
     } else {
-      // Se já estiver logado, vai direto para o app
-      setCurrentView('home');
+      navigate('/app');
     }
   };
 
-  // Renderizar Landing Page com modal de auth
-  if (currentView === 'landing') {
-    return (
-      <>
-        <LandingPage onGetStarted={handleGetStarted} />
-
-        {/* Modal de autenticação disponível na landing page */}
-        <AuthModal
-          show={auth.showAuthModal}
-          onClose={() => {
-            auth.setShowAuthModal(false);
-            setAuthError('');
-          }}
-          authMode={auth.authMode}
-          onAuthModeChange={auth.setAuthMode}
-          email={auth.email}
-          onEmailChange={(value) => {
-            auth.setEmail(value);
-            setAuthError('');
-          }}
-          password={auth.password}
-          onPasswordChange={(value) => {
-            auth.setPassword(value);
-            setAuthError('');
-          }}
-          onSubmit={handleAuth}
-          onSocialLogin={auth.handleSocialLogin}
-          onForgotPassword={handleForgotPassword}
-          showForgotPassword={auth.showForgotPassword}
-          onToggleForgotPassword={auth.toggleForgotPassword}
-          loading={auth.authLoading}
-          error={authError}
-        />
-
-        <ToastMessage message={toast.error} type="error" />
-        <ToastMessage message={toast.success} type="success" />
-      </>
-    );
-  }
+  // Props para AuthModal (reutilizado em várias páginas)
+  const authProps = {
+    show: auth.showAuthModal,
+    onClose: () => {
+      auth.setShowAuthModal(false);
+      setAuthError('');
+    },
+    authMode: auth.authMode,
+    onAuthModeChange: auth.setAuthMode,
+    email: auth.email,
+    onEmailChange: (value) => {
+      auth.setEmail(value);
+      setAuthError('');
+    },
+    password: auth.password,
+    onPasswordChange: (value) => {
+      auth.setPassword(value);
+      setAuthError('');
+    },
+    onSubmit: handleAuth,
+    onSocialLogin: auth.handleSocialLogin,
+    onForgotPassword: handleForgotPassword,
+    showForgotPassword: auth.showForgotPassword,
+    onToggleForgotPassword: auth.toggleForgotPassword,
+    loading: auth.authLoading,
+    error: authError
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 dark:from-gray-900 dark:via-gray-800 dark:to-black text-white relative overflow-hidden transition-colors duration-500">
-      <AnimatedBackground />
-
-      <Header
-        user={auth.user}
-        currentView={currentView}
-        onViewChange={setCurrentView}
-        onAuthClick={() => auth.setShowAuthModal(true)}
-        onLogout={handleLogout}
-        isDarkMode={darkMode.isDarkMode}
-        onToggleDarkMode={darkMode.toggleDarkMode}
+    <Routes>
+      {/* Landing Page - Rota pública */}
+      <Route
+        path="/"
+        element={
+          <LandingPageRoute
+            onGetStarted={handleGetStarted}
+            authProps={authProps}
+            toast={toast}
+          />
+        }
       />
 
-      <ToastMessage message={toast.error} type="error" />
-      <ToastMessage message={toast.success} type="success" />
-
-      <AuthModal
-        show={auth.showAuthModal}
-        onClose={() => {
-          auth.setShowAuthModal(false);
-          setAuthError(''); // Limpar erro ao fechar modal
-        }}
-        authMode={auth.authMode}
-        onAuthModeChange={auth.setAuthMode}
-        email={auth.email}
-        onEmailChange={(value) => {
-          auth.setEmail(value);
-          setAuthError(''); // Limpar erro ao digitar
-        }}
-        password={auth.password}
-        onPasswordChange={(value) => {
-          auth.setPassword(value);
-          setAuthError(''); // Limpar erro ao digitar
-        }}
-        onSubmit={handleAuth}
-        onSocialLogin={auth.handleSocialLogin}
-        onForgotPassword={handleForgotPassword}
-        showForgotPassword={auth.showForgotPassword}
-        onToggleForgotPassword={auth.toggleForgotPassword}
-        loading={auth.authLoading}
-        error={authError}
-      />
-
-      <ResetPasswordModal
-        show={showResetPasswordModal}
-        onClose={() => setShowResetPasswordModal(false)}
-        onSuccess={(message) => {
-          toast.showSuccess(message);
-          setShowResetPasswordModal(false);
-        }}
-      />
-
-      <main className="pt-32 pb-20 px-6 relative z-10">
-        <div className="max-w-5xl mx-auto">
-          {currentView === 'home' && (
-            <>
-              {!transcription.transcription && !transcription.file && <HeroSection />}
-
-              {!transcription.transcription && !transcription.isTranscribing && (
-                <>
-                  {/* Seletor de Idioma */}
-                  <div className="mb-6">
-                    <LanguageSelector
-                      selectedLanguage={transcription.language}
-                      onLanguageChange={transcription.setLanguage}
-                      disabled={transcription.isUploading || transcription.isTranscribing}
-                    />
-                  </div>
-
-                  {/* Toggle de Diarization (Speaker Identification) */}
-                  <div className="mb-8">
-                    <DiarizationToggle
-                      enabled={transcription.diarizationEnabled}
-                      onToggle={transcription.setDiarizationEnabled}
-                      disabled={transcription.isUploading || transcription.isTranscribing}
-                    />
-                  </div>
-
-                  <FileUpload
-                    file={transcription.file}
-                    isDragging={transcription.isDragging}
-                    isUploading={transcription.isUploading}
-                    isTranscribing={transcription.isTranscribing}
-                    uploadProgress={transcription.uploadProgress}
-                    onFileSelect={handleFileSelect}
-                    onDragOver={transcription.handleDragOver}
-                    onDragLeave={transcription.handleDragLeave}
-                    onDrop={transcription.handleDrop}
-                    onUploadAndTranscribe={handleUploadAndTranscribe}
-                  />
-                </>
-              )}
-
-              {transcription.isTranscribing && !transcription.transcription && (
-                <TranscriptionSkeleton progress={Math.round(transcription.transcriptionProgress)} />
-              )}
-
-              {transcription.transcription && (
-                <>
-                  {/* Se tiver segmentos com timestamps, usar componente apropriado */}
-                  {transcription.segments && transcription.segments.length > 0 ? (
-                    <TimestampedTranscription
-                      segments={transcription.segments}
-                      onCopy={handleCopy}
-                      onDownloadTxt={() => handleDownload('txt')}
-                      onDownloadJson={() => handleDownload('json')}
-                      onDownloadPdf={() => handleDownload('pdf')}
-                      onDownloadDocx={() => handleDownload('docx')}
-                      onNewTranscription={transcription.handleNewTranscription}
-                      audioFile={transcription.file}
-                    />
-                  ) : (
-                    <TranscriptionResult
-                      transcription={transcription.transcription}
-                      wordCount={transcription.wordCount}
-                      charCount={transcription.charCount}
-                      onTranscriptionChange={transcription.setTranscription}
-                      onCopy={handleCopy}
-                      onDownloadTxt={() => handleDownload('txt')}
-                      onDownloadJson={() => handleDownload('json')}
-                      onDownloadPdf={() => handleDownload('pdf')}
-                      onDownloadDocx={() => handleDownload('docx')}
-                      onNewTranscription={transcription.handleNewTranscription}
-                    />
-                  )}
-                </>
-              )}
-            </>
-          )}
-
-          {currentView === 'profile' && auth.user && (
-            <ProfileView
-              user={auth.user}
-              transcriptionHistory={history.transcriptionHistory}
-              onViewChange={setCurrentView}
-              onLoadTranscription={loadTranscription}
-              onDeleteFromHistory={history.deleteFromHistory}
+      {/* App Page - Rota protegida */}
+      <Route
+        path="/app"
+        element={
+          <ProtectedRoute user={auth.user}>
+            <AppPage
+              auth={auth}
+              transcription={transcription}
+              history={history}
+              toast={toast}
+              darkMode={darkMode}
+              authProps={authProps}
+              showResetPasswordModal={showResetPasswordModal}
+              setShowResetPasswordModal={setShowResetPasswordModal}
+              handleCopy={handleCopy}
+              handleDownload={handleDownload}
+              handleFileSelect={handleFileSelect}
+              handleUploadAndTranscribe={handleUploadAndTranscribe}
+              handleLogout={handleLogout}
+              loadTranscription={loadTranscription}
             />
-          )}
-        </div>
-      </main>
+          </ProtectedRoute>
+        }
+      />
 
-      <Footer />
-    </div>
+      {/* Profile Page - Rota protegida */}
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute user={auth.user}>
+            <ProfilePage
+              auth={auth}
+              history={history}
+              toast={toast}
+              darkMode={darkMode}
+              authProps={authProps}
+              handleLogout={handleLogout}
+              loadTranscription={loadTranscription}
+            />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Redirect para landing page se rota não existir */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
+};
+
+// Componente App que envolve tudo com Router
+const App = () => {
+  return (
+    <Router>
+      <AppContent />
+    </Router>
   );
 };
 

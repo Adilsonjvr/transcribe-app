@@ -14,3 +14,4 @@ export { DarkModeToggle } from './DarkModeToggle';
 export { LanguageSelector } from './LanguageSelector';
 export { TimestampedTranscription } from './TimestampedTranscription';
 export { DiarizationToggle } from './DiarizationToggle';
+export { ProtectedRoute } from './ProtectedRoute';

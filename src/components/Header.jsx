@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { User, Zap, Home, Menu, X, LogOut } from 'lucide-react';
 import { DarkModeToggle } from './DarkModeToggle';
 
-export const Header = ({ user, currentView, onViewChange, onAuthClick, onLogout, isDarkMode, onToggleDarkMode }) => {
+export const Header = ({ user, onAuthClick, onLogout, isDarkMode, onToggleDarkMode }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
-  const handleNavigation = (view) => {
-    onViewChange(view);
+  const closeMobileMenu = () => {
     setMobileMenuOpen(false);
   };
 
@@ -28,28 +29,28 @@ export const Header = ({ user, currentView, onViewChange, onAuthClick, onLogout,
           {/* Desktop Navigation */}
           {user && (
             <nav className="hidden md:flex items-center gap-2">
-              <button
-                onClick={() => onViewChange('home')}
+              <Link
+                to="/app"
                 className={`px-4 py-2 rounded-full transition-all flex items-center gap-2 ${
-                  currentView === 'home'
+                  location.pathname === '/app'
                     ? 'bg-white/20 text-white'
                     : 'text-white/60 hover:text-white hover:bg-white/10'
                 }`}
               >
                 <Home className="w-4 h-4" />
                 Início
-              </button>
-              <button
-                onClick={() => onViewChange('profile')}
+              </Link>
+              <Link
+                to="/profile"
                 className={`px-4 py-2 rounded-full transition-all flex items-center gap-2 ${
-                  currentView === 'profile'
+                  location.pathname === '/profile'
                     ? 'bg-white/20 text-white'
                     : 'text-white/60 hover:text-white hover:bg-white/10'
                 }`}
               >
                 <User className="w-4 h-4" />
                 Perfil
-              </button>
+              </Link>
             </nav>
           )}
 
@@ -110,29 +111,31 @@ export const Header = ({ user, currentView, onViewChange, onAuthClick, onLogout,
         {user && mobileMenuOpen && (
           <div className="md:hidden mt-4 py-4 border-t border-white/10 animate-fadeIn">
             <nav className="flex flex-col gap-2">
-              <button
-                onClick={() => handleNavigation('home')}
+              <Link
+                to="/app"
+                onClick={closeMobileMenu}
                 className={`px-4 py-3 rounded-lg transition-all flex items-center gap-3 ${
-                  currentView === 'home'
+                  location.pathname === '/app'
                     ? 'bg-white/20 text-white'
                     : 'text-white/70 hover:text-white hover:bg-white/10'
                 }`}
               >
                 <Home className="w-5 h-5" />
                 <span className="font-medium">Início</span>
-              </button>
+              </Link>
 
-              <button
-                onClick={() => handleNavigation('profile')}
+              <Link
+                to="/profile"
+                onClick={closeMobileMenu}
                 className={`px-4 py-3 rounded-lg transition-all flex items-center gap-3 ${
-                  currentView === 'profile'
+                  location.pathname === '/profile'
                     ? 'bg-white/20 text-white'
                     : 'text-white/70 hover:text-white hover:bg-white/10'
                 }`}
               >
                 <User className="w-5 h-5" />
                 <span className="font-medium">Perfil</span>
-              </button>
+              </Link>
 
               <div className="my-2 border-t border-white/10" />
 
