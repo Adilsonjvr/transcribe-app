@@ -23,6 +23,7 @@ import { copyToClipboard, downloadFile, createTranscriptionJSON } from './utils/
 import { exportToPDF, exportToDOCX } from './utils/exportUtils';
 import { LandingPage } from './pages/LandingPage';
 import { PricingPage } from './pages/PricingPage';
+import { LanguageProvider } from './contexts/LanguageContext';
 
 // Componente da Landing Page com navegação
 const LandingPageRoute = ({ onGetStarted, authProps, toast }) => {
@@ -546,12 +547,14 @@ const AppContent = () => {
   );
 };
 
-// Componente App que envolve tudo com Router
+// Componente App que envolve tudo com Router e LanguageProvider
 const App = () => {
   return (
-    <Router>
-      <AppContent />
-    </Router>
+    <LanguageProvider>
+      <Router>
+        <AppContent />
+      </Router>
+    </LanguageProvider>
   );
 };
 
