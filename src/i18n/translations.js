@@ -156,6 +156,205 @@ export const translations = {
       title: 'Pronto para Transformar seu Áudio?',
       subtitle: 'Comece a transcrever hoje com nossa plataforma de IA',
       cta: 'Começar Gratuitamente'
+    },
+
+    // App Header
+    appHeader: {
+      home: 'Início',
+      profile: 'Perfil',
+      logout: 'Sair',
+      login: 'Entrar'
+    },
+
+    // File Upload
+    fileUpload: {
+      title: 'Fazer Upload de Áudio',
+      dragDrop: 'Arraste um arquivo de áudio aqui',
+      or: 'ou',
+      browse: 'Procurar Arquivos',
+      uploading: 'Fazendo upload...',
+      formats: 'Formatos suportados: MP3, WAV, M4A, AAC, OGG, FLAC',
+      maxSize: 'Tamanho máximo: 25MB',
+      selectLanguage: 'Selecionar Idioma',
+      autoDetect: 'Detectar automaticamente',
+      enableDiarization: 'Identificação de Palestrantes',
+      diarizationDesc: 'Identifica quem está falando',
+      enableTimestamps: 'Timestamps',
+      timestampsDesc: 'Marca de tempo para cada segmento',
+      transcribe: 'Transcrever Áudio',
+      transcribing: 'Transcrevendo...'
+    },
+
+    // Transcription Result
+    transcriptionResult: {
+      title: 'Resultado da Transcrição',
+      stats: {
+        words: 'palavras',
+        characters: 'caracteres',
+        speakers: 'palestrantes'
+      },
+      tabs: {
+        text: 'Texto',
+        timestamps: 'Timestamps',
+        speakers: 'Palestrantes'
+      },
+      actions: {
+        copy: 'Copiar',
+        copied: 'Copiado!',
+        download: 'Baixar',
+        edit: 'Editar',
+        save: 'Salvar',
+        cancel: 'Cancelar'
+      },
+      export: {
+        title: 'Exportar como',
+        txt: 'Texto Simples',
+        json: 'JSON com Metadados',
+        pdf: 'PDF Formatado',
+        docx: 'DOCX (Word)'
+      },
+      saveToHistory: 'Salvar no Histórico',
+      newTranscription: 'Nova Transcrição'
+    },
+
+    // Profile View
+    profile: {
+      title: 'MEU PERFIL',
+      subtitle: 'Gerencie suas transcrições e histórico',
+      editProfile: 'Editar Perfil',
+      memberSince: 'Membro desde',
+      stats: {
+        totalTranscriptions: 'Total de Transcrições',
+        wordsTranscribed: 'Palavras Transcritas',
+        lastActivity: 'Última Atividade',
+        today: 'Hoje',
+        never: 'Nunca'
+      },
+      history: {
+        title: 'Histórico de Transcrições',
+        empty: 'Nenhuma transcrição ainda',
+        emptyDesc: 'Suas transcrições aparecerão aqui',
+        search: 'Buscar transcrições...',
+        filters: {
+          all: 'Todas',
+          today: 'Hoje',
+          week: 'Esta Semana',
+          month: 'Este Mês'
+        },
+        actions: {
+          load: 'Carregar',
+          delete: 'Excluir',
+          confirmDelete: 'Tem certeza que deseja excluir esta transcrição?'
+        }
+      }
+    },
+
+    // Auth Modal
+    auth: {
+      login: {
+        title: 'Entrar',
+        email: 'Email',
+        password: 'Senha',
+        button: 'Entrar',
+        noAccount: 'Não tem uma conta?',
+        signUp: 'Cadastre-se',
+        forgotPassword: 'Esqueceu a senha?',
+        withGoogle: 'Entrar com Google'
+      },
+      register: {
+        title: 'Criar Conta',
+        fullName: 'Nome Completo',
+        email: 'Email',
+        password: 'Senha',
+        confirmPassword: 'Confirmar Senha',
+        button: 'Cadastrar',
+        hasAccount: 'Já tem uma conta?',
+        signIn: 'Entrar',
+        withGoogle: 'Cadastrar com Google'
+      },
+      resetPassword: {
+        title: 'Redefinir Senha',
+        description: 'Digite seu email para receber o link de redefinição',
+        email: 'Email',
+        button: 'Enviar Link',
+        backToLogin: 'Voltar ao Login',
+        success: 'Email enviado! Verifique sua caixa de entrada.',
+        newPassword: 'Nova Senha',
+        confirmNewPassword: 'Confirmar Nova Senha',
+        updateButton: 'Atualizar Senha'
+      }
+    },
+
+    // Profile Edit Modal
+    profileEdit: {
+      title: 'Editar Perfil',
+      fullName: 'Nome Completo',
+      company: 'Empresa',
+      jobTitle: 'Cargo',
+      phone: 'Telefone',
+      avatar: 'Avatar',
+      uploadAvatar: 'Fazer Upload',
+      removeAvatar: 'Remover',
+      save: 'Salvar Alterações',
+      cancel: 'Cancelar',
+      updating: 'Atualizando...'
+    },
+
+    // Toast Messages
+    toast: {
+      success: {
+        login: 'Login realizado com sucesso!',
+        register: 'Conta criada com sucesso!',
+        logout: 'Logout realizado com sucesso!',
+        profileUpdated: 'Perfil atualizado com sucesso!',
+        transcriptionSaved: 'Transcrição salva no histórico!',
+        copied: 'Copiado para área de transferência!',
+        deleted: 'Transcrição excluída com sucesso!'
+      },
+      error: {
+        generic: 'Ocorreu um erro. Tente novamente.',
+        invalidEmail: 'Email inválido.',
+        passwordMismatch: 'As senhas não coincidem.',
+        weakPassword: 'Senha muito fraca (mínimo 6 caracteres).',
+        loginFailed: 'Email ou senha incorretos.',
+        uploadFailed: 'Falha no upload do arquivo.',
+        transcriptionFailed: 'Falha na transcrição. Tente novamente.',
+        fileTooLarge: 'Arquivo muito grande (máximo 25MB).',
+        invalidFormat: 'Formato de arquivo não suportado.'
+      }
+    },
+
+    // Loading States
+    loading: {
+      authenticating: 'Autenticando...',
+      uploading: 'Fazendo upload...',
+      transcribing: 'Transcrevendo...',
+      processing: 'Processando...',
+      saving: 'Salvando...',
+      loading: 'Carregando...'
+    },
+
+    // Common
+    common: {
+      yes: 'Sim',
+      no: 'Não',
+      ok: 'OK',
+      cancel: 'Cancelar',
+      save: 'Salvar',
+      delete: 'Excluir',
+      edit: 'Editar',
+      close: 'Fechar',
+      back: 'Voltar',
+      next: 'Próximo',
+      previous: 'Anterior',
+      search: 'Buscar',
+      filter: 'Filtrar',
+      sort: 'Ordenar',
+      select: 'Selecionar',
+      upload: 'Upload',
+      download: 'Baixar',
+      copy: 'Copiar',
+      share: 'Compartilhar'
     }
   },
 
@@ -316,6 +515,205 @@ export const translations = {
       title: 'Ready to Transform Your Audio?',
       subtitle: 'Start transcribing today with our AI platform',
       cta: 'Get Started Free'
+    },
+
+    // App Header
+    appHeader: {
+      home: 'Home',
+      profile: 'Profile',
+      logout: 'Logout',
+      login: 'Login'
+    },
+
+    // File Upload
+    fileUpload: {
+      title: 'Upload Audio',
+      dragDrop: 'Drag an audio file here',
+      or: 'or',
+      browse: 'Browse Files',
+      uploading: 'Uploading...',
+      formats: 'Supported formats: MP3, WAV, M4A, AAC, OGG, FLAC',
+      maxSize: 'Maximum size: 25MB',
+      selectLanguage: 'Select Language',
+      autoDetect: 'Auto-detect',
+      enableDiarization: 'Speaker Identification',
+      diarizationDesc: 'Identifies who is speaking',
+      enableTimestamps: 'Timestamps',
+      timestampsDesc: 'Time markers for each segment',
+      transcribe: 'Transcribe Audio',
+      transcribing: 'Transcribing...'
+    },
+
+    // Transcription Result
+    transcriptionResult: {
+      title: 'Transcription Result',
+      stats: {
+        words: 'words',
+        characters: 'characters',
+        speakers: 'speakers'
+      },
+      tabs: {
+        text: 'Text',
+        timestamps: 'Timestamps',
+        speakers: 'Speakers'
+      },
+      actions: {
+        copy: 'Copy',
+        copied: 'Copied!',
+        download: 'Download',
+        edit: 'Edit',
+        save: 'Save',
+        cancel: 'Cancel'
+      },
+      export: {
+        title: 'Export as',
+        txt: 'Plain Text',
+        json: 'JSON with Metadata',
+        pdf: 'Formatted PDF',
+        docx: 'DOCX (Word)'
+      },
+      saveToHistory: 'Save to History',
+      newTranscription: 'New Transcription'
+    },
+
+    // Profile View
+    profile: {
+      title: 'MY PROFILE',
+      subtitle: 'Manage your transcriptions and history',
+      editProfile: 'Edit Profile',
+      memberSince: 'Member since',
+      stats: {
+        totalTranscriptions: 'Total Transcriptions',
+        wordsTranscribed: 'Words Transcribed',
+        lastActivity: 'Last Activity',
+        today: 'Today',
+        never: 'Never'
+      },
+      history: {
+        title: 'Transcription History',
+        empty: 'No transcriptions yet',
+        emptyDesc: 'Your transcriptions will appear here',
+        search: 'Search transcriptions...',
+        filters: {
+          all: 'All',
+          today: 'Today',
+          week: 'This Week',
+          month: 'This Month'
+        },
+        actions: {
+          load: 'Load',
+          delete: 'Delete',
+          confirmDelete: 'Are you sure you want to delete this transcription?'
+        }
+      }
+    },
+
+    // Auth Modal
+    auth: {
+      login: {
+        title: 'Login',
+        email: 'Email',
+        password: 'Password',
+        button: 'Login',
+        noAccount: "Don't have an account?",
+        signUp: 'Sign up',
+        forgotPassword: 'Forgot password?',
+        withGoogle: 'Login with Google'
+      },
+      register: {
+        title: 'Create Account',
+        fullName: 'Full Name',
+        email: 'Email',
+        password: 'Password',
+        confirmPassword: 'Confirm Password',
+        button: 'Register',
+        hasAccount: 'Already have an account?',
+        signIn: 'Sign in',
+        withGoogle: 'Sign up with Google'
+      },
+      resetPassword: {
+        title: 'Reset Password',
+        description: 'Enter your email to receive the reset link',
+        email: 'Email',
+        button: 'Send Link',
+        backToLogin: 'Back to Login',
+        success: 'Email sent! Check your inbox.',
+        newPassword: 'New Password',
+        confirmNewPassword: 'Confirm New Password',
+        updateButton: 'Update Password'
+      }
+    },
+
+    // Profile Edit Modal
+    profileEdit: {
+      title: 'Edit Profile',
+      fullName: 'Full Name',
+      company: 'Company',
+      jobTitle: 'Job Title',
+      phone: 'Phone',
+      avatar: 'Avatar',
+      uploadAvatar: 'Upload',
+      removeAvatar: 'Remove',
+      save: 'Save Changes',
+      cancel: 'Cancel',
+      updating: 'Updating...'
+    },
+
+    // Toast Messages
+    toast: {
+      success: {
+        login: 'Login successful!',
+        register: 'Account created successfully!',
+        logout: 'Logout successful!',
+        profileUpdated: 'Profile updated successfully!',
+        transcriptionSaved: 'Transcription saved to history!',
+        copied: 'Copied to clipboard!',
+        deleted: 'Transcription deleted successfully!'
+      },
+      error: {
+        generic: 'An error occurred. Please try again.',
+        invalidEmail: 'Invalid email.',
+        passwordMismatch: 'Passwords do not match.',
+        weakPassword: 'Password too weak (minimum 6 characters).',
+        loginFailed: 'Incorrect email or password.',
+        uploadFailed: 'File upload failed.',
+        transcriptionFailed: 'Transcription failed. Please try again.',
+        fileTooLarge: 'File too large (maximum 25MB).',
+        invalidFormat: 'Unsupported file format.'
+      }
+    },
+
+    // Loading States
+    loading: {
+      authenticating: 'Authenticating...',
+      uploading: 'Uploading...',
+      transcribing: 'Transcribing...',
+      processing: 'Processing...',
+      saving: 'Saving...',
+      loading: 'Loading...'
+    },
+
+    // Common
+    common: {
+      yes: 'Yes',
+      no: 'No',
+      ok: 'OK',
+      cancel: 'Cancel',
+      save: 'Save',
+      delete: 'Delete',
+      edit: 'Edit',
+      close: 'Close',
+      back: 'Back',
+      next: 'Next',
+      previous: 'Previous',
+      search: 'Search',
+      filter: 'Filter',
+      sort: 'Sort',
+      select: 'Select',
+      upload: 'Upload',
+      download: 'Download',
+      copy: 'Copy',
+      share: 'Share'
     }
   }
 };
