@@ -50,10 +50,11 @@ export const useAuth = () => {
   /**
    * Fazer login ou signup
    */
-  const handleAuth = useCallback(async () => {
+  const handleAuth = useCallback(async (additionalData = {}) => {
     console.log('[useAuth] Iniciando handleAuth...');
     console.log('[useAuth] Email:', email);
     console.log('[useAuth] AuthMode:', authMode);
+    console.log('[useAuth] Additional Data:', additionalData);
 
     // Validar campos
     const validation = validateAuthFields(email, password);
@@ -70,7 +71,8 @@ export const useAuth = () => {
 
       if (authMode === 'signup') {
         console.log('[useAuth] Chamando signUp...');
-        result = await signUp(email, password);
+        // Passar nome completo para o signup
+        result = await signUp(email, password, additionalData.fullName);
       } else {
         console.log('[useAuth] Chamando signIn...');
         result = await signIn(email, password);

@@ -11,15 +11,19 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
  * Registrar novo usuário
  * @param {string} email - Email do usuário
  * @param {string} password - Senha do usuário
+ * @param {string} fullName - Nome completo do usuário (opcional)
  * @returns {Promise<{success: boolean, user?: object, error?: string}>}
  */
-export const signUp = async (email, password) => {
+export const signUp = async (email, password, fullName = '') => {
   try {
-    const { data, error } = await supabase.auth.signUp({
+    const { data, error} = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: window.location.origin
+        emailRedirectTo: window.location.origin,
+        data: {
+          full_name: fullName || email.split('@')[0] // Usar email como fallback
+        }
       }
     });
 

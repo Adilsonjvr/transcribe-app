@@ -1,5 +1,6 @@
-import React, { useRef, useEffect } from 'react';
-import { X, Loader2, Mail } from 'lucide-react';
+import React, { useRef, useEffect, useState } from 'react';
+import { X, Loader2, Mail, Eye, EyeOff, User, Lock, CheckCircle2, AlertCircle } from 'lucide-react';
+import { PasswordStrengthIndicator } from './PasswordStrengthIndicator';
 
 export const AuthModal = ({
   show,
@@ -19,13 +20,38 @@ export const AuthModal = ({
   error = ''
 }) => {
   const emailInputRef = useRef(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [isEmailValid, setIsEmailValid] = useState(false);
 
   // Auto-focus no email quando o modal abre
   useEffect(() => {
     if (show && emailInputRef.current) {
-      emailInputRef.current.focus();
+      setTimeout(() => emailInputRef.current?.focus(), 100);
     }
   }, [show]);
+
+  // Reset states when modal closes or mode changes
+  useEffect(() => {
+    if (!show) {
+      setShowPassword(false);
+      setShowConfirmPassword(false);
+      setConfirmPassword('');
+      setFullName('');
+      setEmailError('');
+      setPasswordError('');
+      setIsEmailValid(false);
+    }
+  }, [show]);
+
+  useEffect(() => {
+    setConfirmPassword('');
+    setPasswordError('');
+  }, [authMode]);
 
   // Fechar modal com ESC
   useEffect(() => {
@@ -41,52 +67,172 @@ export const AuthModal = ({
     return () => document.removeEventListener('keydown', handleEsc);
   }, [show, onClose]);
 
-  if (!show) return null;
+  // Email validation
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleEmailBlur = () => {
+    if (email && !validateEmail(email)) {
+      setEmailError('Email inválido');
+      setIsEmailValid(false);
+    } else if (email) {
+      setEmailError('');
+      setIsEmailValid(true);
+    }
+  };
+
+  const handleEmailChange = (value) => {
+    onEmailChange(value);
+    if (emailError) {
+      setEmailError('');
+    }
+    if (value && validateEmail(value)) {
+      setIsEmailValid(true);
+    } else {
+      setIsEmailValid(false);
+    }
+  };
+
+  // Password validation
+  const validatePasswordStrength = (pwd) => {
+    const requirements = [
+      pwd.length >= 8,
+      /[A-Z]/.test(pwd),
+      /[a-z]/.test(pwd),
+      /[0-9]/.test(pwd),
+      /[^A-Za-z0-9]/.test(pwd)
+    ];
+    return requirements.filter(Boolean).length >= 4;
+  };
+
+  const handlePasswordChange = (value) => {
+    onPasswordChange(value);
+    if (passwordError) {
+      setPasswordError('');
+    }
+  };
+
+  const handleConfirmPasswordChange = (value) => {
+    setConfirmPassword(value);
+    if (passwordError) {
+      setPasswordError('');
+    }
+  };
+
+  const handleSubmit = () => {
+    // Validate email
+    if (!validateEmail(email)) {
+      setEmailError('Por favor, insira um email válido');
+      return;
+    }
+
+    // Validate password strength for signup
+    if (authMode === 'signup' && !validatePasswordStrength(password)) {
+      setPasswordError('A senha não atende aos requisitos mínimos de segurança');
+      return;
+    }
+
+    // Validate password confirmation
+    if (authMode === 'signup' && password !== confirmPassword) {
+      setPasswordError('As senhas não coincidem');
+      return;
+    }
+
+    // Validate full name for signup
+    if (authMode === 'signup' && !fullName.trim()) {
+      return; // Field required validation handled by disabled button
+    }
+
+    onSubmit({ fullName: fullName.trim() });
+  };
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !loading) {
       if (showForgotPassword) {
         onForgotPassword();
       } else {
-        onSubmit();
+        handleSubmit();
       }
     }
   };
 
+  const isFormValid = () => {
+    if (showForgotPassword) {
+      return email && validateEmail(email);
+    }
+
+    if (authMode === 'signup') {
+      return (
+        email &&
+        validateEmail(email) &&
+        password &&
+        confirmPassword &&
+        password === confirmPassword &&
+        validatePasswordStrength(password) &&
+        fullName.trim()
+      );
+    }
+
+    return email && password;
+  };
+
+  if (!show) return null;
+
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-fadeIn"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           onClose();
         }
       }}
     >
-      <div className="bg-gradient-to-br from-purple-900/90 to-blue-900/90 backdrop-blur-xl border border-white/20 rounded-2xl p-8 w-full max-w-md relative">
+      <div className="bg-gradient-to-br from-gray-900/95 via-purple-900/95 to-blue-900/95 backdrop-blur-2xl border border-white/10 rounded-3xl p-8 md:p-10 w-full max-w-md relative shadow-2xl transform transition-all animate-slideUp">
+        {/* Close Button */}
         <button
           onClick={onClose}
           disabled={loading}
-          className="absolute top-4 right-4 p-2 hover:bg-white/10 rounded-full transition-all disabled:opacity-50"
+          className="absolute top-5 right-5 p-2 hover:bg-white/10 rounded-full transition-all disabled:opacity-50 group"
           aria-label="Fechar modal"
         >
-          <X className="w-5 h-5" />
+          <X className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
         </button>
 
-        <h2 className="text-2xl font-bold mb-6 text-white">
-          {showForgotPassword
-            ? 'Recuperar Senha'
-            : authMode === 'signup'
-            ? 'Criar Conta'
-            : 'Entrar'}
-        </h2>
-
-        {error && (
-          <div className="mb-4 p-4 bg-red-500/20 border border-red-500 rounded-lg flex items-start gap-3 animate-shake">
-            <div className="flex-shrink-0 w-5 h-5 mt-0.5">
-              <svg className="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-              </svg>
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg">
+              {showForgotPassword ? (
+                <Mail className="w-6 h-6" />
+              ) : authMode === 'signup' ? (
+                <User className="w-6 h-6" />
+              ) : (
+                <Lock className="w-6 h-6" />
+              )}
             </div>
+            <h2 className="text-3xl font-black text-white tracking-tight">
+              {showForgotPassword
+                ? 'Recuperar Senha'
+                : authMode === 'signup'
+                ? 'Criar Conta'
+                : 'Bem-vindo'}
+            </h2>
+          </div>
+          <p className="text-white/60 text-sm">
+            {showForgotPassword
+              ? 'Enviaremos um link para redefinir sua senha'
+              : authMode === 'signup'
+              ? 'Preencha os dados para começar'
+              : 'Entre para continuar sua jornada'}
+          </p>
+        </div>
+
+        {/* Error Alert */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-xl flex items-start gap-3 animate-shake">
+            <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
             <div className="flex-1">
               <p className="text-sm font-medium text-red-100">{error}</p>
             </div>
@@ -95,33 +241,47 @@ export const AuthModal = ({
 
         {showForgotPassword ? (
           // FORGOT PASSWORD FORM
-          <div className="space-y-4">
-            <p className="text-sm text-white/70 mb-4">
-              Digite seu email para receber um link de recuperação de senha.
+          <div className="space-y-5">
+            <p className="text-sm text-white/70 mb-4 bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
+              Digite seu email cadastrado e enviaremos um link para redefinir sua senha.
             </p>
 
-            <div>
-              <label htmlFor="auth-email" className="block text-sm font-medium text-white/70 mb-2">
+            {/* Email Field */}
+            <div className="space-y-2">
+              <label htmlFor="auth-email" className="block text-sm font-semibold text-white/80">
                 Email
               </label>
-              <input
-                id="auth-email"
-                ref={emailInputRef}
-                type="email"
-                value={email}
-                onChange={(e) => onEmailChange(e.target.value)}
-                onKeyPress={handleKeyPress}
-                disabled={loading}
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-white/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                placeholder="seu@email.com"
-                aria-required="true"
-              />
+              <div className="relative">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+                <input
+                  id="auth-email"
+                  ref={emailInputRef}
+                  type="email"
+                  value={email}
+                  onChange={(e) => handleEmailChange(e.target.value)}
+                  onBlur={handleEmailBlur}
+                  onKeyPress={handleKeyPress}
+                  disabled={loading}
+                  className="w-full pl-12 pr-4 py-3.5 bg-white/10 border border-white/20 rounded-xl focus:outline-none focus:border-purple-400 focus:bg-white/15 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-white placeholder:text-white/40"
+                  placeholder="seu@email.com"
+                  aria-required="true"
+                />
+                {isEmailValid && (
+                  <CheckCircle2 className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-green-400 animate-fadeIn" />
+                )}
+              </div>
+              {emailError && (
+                <p className="text-xs text-red-400 flex items-center gap-1 animate-fadeIn">
+                  <AlertCircle className="w-3 h-3" />
+                  {emailError}
+                </p>
+              )}
             </div>
 
             <button
               onClick={onForgotPassword}
-              disabled={loading || !email}
-              className="w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white font-medium py-3 rounded-lg hover:from-purple-600 hover:to-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              disabled={loading || !isFormValid()}
+              className="w-full bg-gradient-to-r from-purple-500 via-purple-600 to-blue-600 text-white font-semibold py-3.5 rounded-xl hover:shadow-lg hover:shadow-purple-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transform hover:scale-[1.02] active:scale-[0.98]"
             >
               {loading ? (
                 <>
@@ -131,75 +291,191 @@ export const AuthModal = ({
               ) : (
                 <>
                   <Mail className="w-5 h-5" />
-                  Enviar Email
+                  Enviar Link de Recuperação
                 </>
               )}
             </button>
 
-            <div className="mt-4 text-center">
+            <div className="mt-6 text-center">
               <button
                 onClick={onToggleForgotPassword}
                 disabled={loading}
-                className="text-sm text-white/50 hover:text-white transition-all disabled:opacity-50"
+                className="text-sm text-purple-300 hover:text-white transition-all disabled:opacity-50 font-medium"
               >
-                Voltar para login
+                ← Voltar para login
               </button>
             </div>
           </div>
         ) : (
           // LOGIN / SIGNUP FORM
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="auth-email" className="block text-sm font-medium text-white/70 mb-2">
+          <div className="space-y-5">
+            {/* Full Name (Signup only) */}
+            {authMode === 'signup' && (
+              <div className="space-y-2 animate-slideDown">
+                <label htmlFor="auth-name" className="block text-sm font-semibold text-white/80">
+                  Nome Completo
+                </label>
+                <div className="relative">
+                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+                  <input
+                    id="auth-name"
+                    type="text"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    disabled={loading}
+                    className="w-full pl-12 pr-4 py-3.5 bg-white/10 border border-white/20 rounded-xl focus:outline-none focus:border-purple-400 focus:bg-white/15 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-white placeholder:text-white/40"
+                    placeholder="Seu nome completo"
+                    aria-required="true"
+                    autoComplete="name"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Email Field */}
+            <div className="space-y-2">
+              <label htmlFor="auth-email" className="block text-sm font-semibold text-white/80">
                 Email
               </label>
-              <input
-                id="auth-email"
-                ref={emailInputRef}
-                type="email"
-                value={email}
-                onChange={(e) => onEmailChange(e.target.value)}
-                onKeyPress={handleKeyPress}
-                disabled={loading}
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-white/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                placeholder="seu@email.com"
-                aria-required="true"
-              />
+              <div className="relative">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+                <input
+                  id="auth-email"
+                  ref={emailInputRef}
+                  type="email"
+                  value={email}
+                  onChange={(e) => handleEmailChange(e.target.value)}
+                  onBlur={handleEmailBlur}
+                  onKeyPress={handleKeyPress}
+                  disabled={loading}
+                  className="w-full pl-12 pr-4 py-3.5 bg-white/10 border border-white/20 rounded-xl focus:outline-none focus:border-purple-400 focus:bg-white/15 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-white placeholder:text-white/40"
+                  placeholder="seu@email.com"
+                  aria-required="true"
+                  autoComplete="email"
+                />
+                {isEmailValid && (
+                  <CheckCircle2 className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-green-400 animate-fadeIn" />
+                )}
+              </div>
+              {emailError && (
+                <p className="text-xs text-red-400 flex items-center gap-1 animate-fadeIn">
+                  <AlertCircle className="w-3 h-3" />
+                  {emailError}
+                </p>
+              )}
             </div>
 
-            <div>
-              <label htmlFor="auth-password" className="block text-sm font-medium text-white/70 mb-2">
+            {/* Password Field */}
+            <div className="space-y-2">
+              <label htmlFor="auth-password" className="block text-sm font-semibold text-white/80">
                 Senha
               </label>
-              <input
-                id="auth-password"
-                type="password"
-                value={password}
-                onChange={(e) => onPasswordChange(e.target.value)}
-                onKeyPress={handleKeyPress}
-                disabled={loading}
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-white/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                placeholder="••••••••"
-                aria-required="true"
-              />
+              <div className="relative">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+                <input
+                  id="auth-password"
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => handlePasswordChange(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  disabled={loading}
+                  className="w-full pl-12 pr-12 py-3.5 bg-white/10 border border-white/20 rounded-xl focus:outline-none focus:border-purple-400 focus:bg-white/15 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-white placeholder:text-white/40"
+                  placeholder="••••••••"
+                  aria-required="true"
+                  autoComplete={authMode === 'signup' ? 'new-password' : 'current-password'}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 transition-colors"
+                  tabIndex={-1}
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
             </div>
 
+            {/* Password Strength Indicator (Signup only) */}
+            {authMode === 'signup' && password && (
+              <div className="animate-slideDown">
+                <PasswordStrengthIndicator password={password} />
+              </div>
+            )}
+
+            {/* Confirm Password (Signup only) */}
+            {authMode === 'signup' && (
+              <div className="space-y-2 animate-slideDown">
+                <label htmlFor="auth-confirm-password" className="block text-sm font-semibold text-white/80">
+                  Confirmar Senha
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+                  <input
+                    id="auth-confirm-password"
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    value={confirmPassword}
+                    onChange={(e) => handleConfirmPasswordChange(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    disabled={loading}
+                    className={`w-full pl-12 pr-12 py-3.5 bg-white/10 border rounded-xl focus:outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed text-white placeholder:text-white/40 ${
+                      confirmPassword && password !== confirmPassword
+                        ? 'border-red-500 focus:border-red-400'
+                        : confirmPassword && password === confirmPassword
+                        ? 'border-green-500 focus:border-green-400'
+                        : 'border-white/20 focus:border-purple-400'
+                    }`}
+                    placeholder="••••••••"
+                    aria-required="true"
+                    autoComplete="new-password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 transition-colors"
+                    tabIndex={-1}
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="w-5 h-5" />
+                    ) : (
+                      <Eye className="w-5 h-5" />
+                    )}
+                  </button>
+                  {confirmPassword && password === confirmPassword && (
+                    <CheckCircle2 className="absolute right-12 top-1/2 -translate-y-1/2 w-5 h-5 text-green-400 animate-fadeIn" />
+                  )}
+                </div>
+                {confirmPassword && password !== confirmPassword && (
+                  <p className="text-xs text-red-400 flex items-center gap-1 animate-fadeIn">
+                    <AlertCircle className="w-3 h-3" />
+                    As senhas não coincidem
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Forgot Password Link (Login only) */}
             {authMode === 'signin' && (
               <div className="text-right">
                 <button
                   onClick={onToggleForgotPassword}
                   disabled={loading}
-                  className="text-sm text-white/50 hover:text-white transition-all disabled:opacity-50"
+                  className="text-sm text-purple-300 hover:text-white transition-all disabled:opacity-50 font-medium"
                 >
                   Esqueceu a senha?
                 </button>
               </div>
             )}
 
+            {/* Submit Button */}
             <button
-              onClick={onSubmit}
-              disabled={loading || !email || !password}
-              className="w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white font-medium py-3 rounded-lg hover:from-purple-600 hover:to-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              onClick={handleSubmit}
+              disabled={loading || !isFormValid()}
+              className="w-full bg-gradient-to-r from-purple-500 via-purple-600 to-blue-600 text-white font-semibold py-3.5 rounded-xl hover:shadow-lg hover:shadow-purple-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transform hover:scale-[1.02] active:scale-[0.98]"
             >
               {loading ? (
                 <>
@@ -214,20 +490,20 @@ export const AuthModal = ({
             {/* Divider */}
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-white/20"></div>
+                <div className="w-full border-t border-white/10"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-gradient-to-br from-purple-900/90 to-blue-900/90 text-white/70">
+                <span className="px-4 bg-gradient-to-br from-gray-900/95 via-purple-900/95 to-blue-900/95 text-white/60 font-medium">
                   Ou continue com
                 </span>
               </div>
             </div>
 
-            {/* Social Login Button - Apenas Google */}
+            {/* Social Login Button - Google */}
             <button
               onClick={() => onSocialLogin('google')}
               disabled={loading}
-              className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white text-gray-800 font-medium rounded-lg hover:bg-gray-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+              className="w-full flex items-center justify-center gap-3 px-4 py-3.5 bg-white text-gray-800 font-semibold rounded-xl hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98]"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -240,15 +516,19 @@ export const AuthModal = ({
           </div>
         )}
 
+        {/* Toggle Auth Mode */}
         {!showForgotPassword && (
-          <div className="mt-6 text-center">
-            <button
-              onClick={() => onAuthModeChange(authMode === 'signup' ? 'signin' : 'signup')}
-              disabled={loading}
-              className="text-sm text-white/50 hover:text-white transition-all disabled:opacity-50"
-            >
-              {authMode === 'signup' ? 'Já tem conta? Entrar' : 'Não tem conta? Criar'}
-            </button>
+          <div className="mt-8 text-center">
+            <p className="text-sm text-white/50">
+              {authMode === 'signup' ? 'Já tem uma conta?' : 'Não tem uma conta?'}{' '}
+              <button
+                onClick={() => onAuthModeChange(authMode === 'signup' ? 'signin' : 'signup')}
+                disabled={loading}
+                className="text-purple-300 hover:text-white font-semibold transition-all disabled:opacity-50"
+              >
+                {authMode === 'signup' ? 'Entrar' : 'Criar conta'}
+              </button>
+            </p>
           </div>
         )}
       </div>
