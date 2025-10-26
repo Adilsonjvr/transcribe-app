@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { User, Clock, FileAudio, ChevronRight, Trash2, Edit2 } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { User, Clock, FileAudio, ChevronRight, Trash2, Edit2, Search, Filter } from 'lucide-react';
 import { formatDate } from '../utils/formatters';
 import { ProfileEditModal } from './ProfileEditModal';
 import { useNavigate } from 'react-router-dom';
@@ -17,6 +17,8 @@ export const ProfileView = ({
 }) => {
   const navigate = useNavigate();
   const [showEditModal, setShowEditModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [dateFilter, setDateFilter] = useState('all'); // 'all', 'today', 'week', 'month'
 
   const handleSaveProfile = async (updates) => {
     const result = await onUpdateProfile(updates);
@@ -25,6 +27,44 @@ export const ProfileView = ({
     }
     return result;
   };
+
+  // Função para filtrar por data
+  const filterByDate = (item) => {
+    const itemDate = new Date(item.date);
+    const now = new Date();
+
+    switch(dateFilter) {
+      case 'today':
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        return itemDate >= today;
+      case 'week':
+        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        return itemDate >= weekAgo;
+      case 'month':
+        const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+        return itemDate >= monthAgo;
+      default:
+        return true;
+    }
+  };
+
+  // Filtrar e buscar transcrições
+  const filteredHistory = useMemo(() => {
+    return transcriptionHistory
+      .filter(item => {
+        // Filtro de busca
+        const matchesSearch = searchQuery === '' ||
+          item.fileName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.transcription.toLowerCase().includes(searchQuery.toLowerCase());
+
+        // Filtro de data
+        const matchesDate = filterByDate(item);
+
+        return matchesSearch && matchesDate;
+      })
+      .sort((a, b) => new Date(b.date) - new Date(a.date)); // Mais recentes primeiro
+  }, [transcriptionHistory, searchQuery, dateFilter]);
+
   return (
     <div>
       <div className="mb-12">
@@ -97,11 +137,65 @@ export const ProfileView = ({
       </div>
 
       {/* History */}
-      <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-8">
+      <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-4 sm:p-8">
         <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
           <Clock className="w-6 h-6 text-purple-400" />
           Histórico de Transcrições
         </h3>
+
+        {/* Search and Filters */}
+        {transcriptionHistory.length > 0 && (
+          <div className="mb-6 space-y-4">
+            {/* Search Bar */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+              <input
+                type="text"
+                placeholder="Buscar por nome do arquivo ou conteúdo..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+
+            {/* Date Filters */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-2">
+              <Filter className="w-5 h-5 text-white/40 flex-shrink-0" />
+              {[
+                { value: 'all', label: 'Todas' },
+                { value: 'today', label: 'Hoje' },
+                { value: 'week', label: 'Esta Semana' },
+                { value: 'month', label: 'Este Mês' }
+              ].map(filter => (
+                <button
+                  key={filter.value}
+                  onClick={() => setDateFilter(filter.value)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex-shrink-0 ${
+                    dateFilter === filter.value
+                      ? 'bg-purple-500 text-white'
+                      : 'bg-white/5 text-white/70 hover:bg-white/10'
+                  }`}
+                >
+                  {filter.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Results Count */}
+            <div className="text-sm text-white/50">
+              {filteredHistory.length} {filteredHistory.length === 1 ? 'transcrição encontrada' : 'transcrições encontradas'}
+              {searchQuery && ` para "${searchQuery}"`}
+            </div>
+          </div>
+        )}
 
         {transcriptionHistory.length === 0 ? (
           <div className="text-center py-12">
@@ -114,9 +208,24 @@ export const ProfileView = ({
               Criar primeira transcrição
             </button>
           </div>
+        ) : filteredHistory.length === 0 ? (
+          <div className="text-center py-12">
+            <Search className="w-16 h-16 mx-auto mb-4 text-white/30" />
+            <p className="text-white/50 text-lg">Nenhuma transcrição encontrada</p>
+            <p className="text-white/40 text-sm mt-2">Tente ajustar os filtros ou a busca</p>
+            <button
+              onClick={() => {
+                setSearchQuery('');
+                setDateFilter('all');
+              }}
+              className="mt-4 px-6 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-all text-sm"
+            >
+              Limpar Filtros
+            </button>
+          </div>
         ) : (
           <div className="space-y-3">
-            {transcriptionHistory.map((item) => (
+            {filteredHistory.map((item) => (
               <div
                 key={item.id}
                 className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/10 transition-all group"
