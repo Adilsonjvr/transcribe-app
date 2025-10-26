@@ -9,24 +9,24 @@ export const translations = {
     hero: {
       badge: 'Powered by AssemblyAI',
       title: {
-        line1: 'A Plataforma de',
-        line2: 'Transcrição de Áudio',
-        line3: 'Mais Inteligente'
+        line1: 'Transcreva Áudio',
+        line2: 'com Inteligência Artificial',
+        line3: 'em Segundos'
       },
-      subtitle: 'Transforme seus áudios em transcrições precisas com {speakers}, {languages} e {timestamps} em segundos.',
+      subtitle: 'Transforme seus áudios em texto com precisão de até 95%. Suporte para {speakers}, {languages} e {timestamps}.',
       subtitleHighlights: {
-        speakers: 'identificação de palestrantes',
-        languages: '100+ idiomas',
-        timestamps: 'timestamps'
+        speakers: 'múltiplos palestrantes',
+        languages: 'diversos idiomas',
+        timestamps: 'timestamps precisos'
       },
       cta: {
         primary: 'Começar a Transcrever Grátis',
         secondary: 'Ver Demonstração'
       },
       stats: {
-        accuracy: { value: '95%', label: 'Taxa de Precisão' },
-        languages: { value: '100+', label: 'Idiomas' },
-        speed: { value: '<5s', label: 'Tempo de Processamento' },
+        accuracy: { value: '95%', label: 'Precisão' },
+        languages: { value: '6+', label: 'Idiomas' },
+        speed: { value: '<5s', label: 'Processamento' },
         availability: { value: '24/7', label: 'Disponível' }
       }
     },
@@ -45,8 +45,8 @@ export const translations = {
           description: 'Obtenha timestamps precisos para cada segmento, perfeito para navegação e referência.'
         },
         {
-          title: '100+ Idiomas',
-          description: 'Suporte para mais de 100 idiomas com detecção automática e alta precisão.'
+          title: 'Múltiplos Idiomas',
+          description: 'Suporte para Português, Inglês, Espanhol, Francês, Alemão, Italiano e mais, com detecção automática.'
         },
         {
           title: 'Ultra Rápido',
@@ -101,7 +101,7 @@ export const translations = {
         enterprise: {
           name: 'Enterprise',
           price: 'Customizado',
-          period: 'entre em contato',
+          period: 'contato',
           description: 'Para grandes equipes e organizações',
           features: [
             'Minutos ilimitados',
@@ -142,7 +142,7 @@ export const translations = {
         },
         {
           question: 'Quais idiomas são suportados?',
-          answer: 'Suportamos mais de 100 idiomas incluindo Inglês, Espanhol, Francês, Alemão, Português, Chinês, Japonês, Coreano e muitos mais. Detecção automática de idioma também está disponível.'
+          answer: 'Suportamos Português (Brasil), Inglês (US), Espanhol, Francês, Alemão, Italiano e detecção automática de idioma. A transcrição funciona com alta precisão em todos esses idiomas.'
         },
         {
           question: 'Meus dados estão seguros?',
@@ -169,24 +169,24 @@ export const translations = {
     hero: {
       badge: 'Powered by AssemblyAI',
       title: {
-        line1: 'The Smartest',
-        line2: 'Audio Transcription',
-        line3: 'Platform'
+        line1: 'Transcribe Audio',
+        line2: 'with Artificial Intelligence',
+        line3: 'in Seconds'
       },
-      subtitle: 'Transform your audio into accurate transcriptions with {speakers}, {languages}, and {timestamps} in seconds.',
+      subtitle: 'Transform your audio into text with up to 95% accuracy. Support for {speakers}, {languages}, and {timestamps}.',
       subtitleHighlights: {
-        speakers: 'speaker identification',
-        languages: '100+ languages',
-        timestamps: 'timestamps'
+        speakers: 'multiple speakers',
+        languages: 'multiple languages',
+        timestamps: 'precise timestamps'
       },
       cta: {
         primary: 'Start Transcribing Free',
         secondary: 'Watch Demo'
       },
       stats: {
-        accuracy: { value: '95%', label: 'Accuracy Rate' },
-        languages: { value: '100+', label: 'Languages' },
-        speed: { value: '<5s', label: 'Processing Time' },
+        accuracy: { value: '95%', label: 'Accuracy' },
+        languages: { value: '6+', label: 'Languages' },
+        speed: { value: '<5s', label: 'Processing' },
         availability: { value: '24/7', label: 'Available' }
       }
     },
@@ -205,8 +205,8 @@ export const translations = {
           description: 'Get accurate timestamps for each segment, perfect for navigation and reference.'
         },
         {
-          title: '100+ Languages',
-          description: 'Support for over 100 languages with automatic detection and high accuracy.'
+          title: 'Multiple Languages',
+          description: 'Support for Portuguese, English, Spanish, French, German, Italian and more, with automatic detection.'
         },
         {
           title: 'Ultra Fast',
@@ -261,7 +261,7 @@ export const translations = {
         enterprise: {
           name: 'Enterprise',
           price: 'Custom',
-          period: 'contact us',
+          period: 'contact',
           description: 'For large teams and organizations',
           features: [
             'Unlimited minutes',
@@ -302,7 +302,7 @@ export const translations = {
         },
         {
           question: 'Which languages are supported?',
-          answer: 'We support over 100 languages including English, Spanish, French, German, Portuguese, Chinese, Japanese, Korean, and many more. Automatic language detection is also available.'
+          answer: 'We support Portuguese (Brazil), English (US), Spanish, French, German, Italian, and automatic language detection. Transcription works with high accuracy in all these languages.'
         },
         {
           question: 'Is my data secure?',

@@ -35,10 +35,10 @@ export const ProfileView = ({
       </div>
 
       {/* User Info Card */}
-      <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-8 mb-8">
-        <div className="flex items-start justify-between mb-6">
+      <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-4 sm:p-8 mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-start sm:justify-between gap-4 mb-6">
           <div className="flex items-center gap-4">
-            <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center overflow-hidden">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0">
               {profile?.avatar_url ? (
                 <img
                   src={profile.avatar_url}
@@ -46,18 +46,18 @@ export const ProfileView = ({
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <User className="w-10 h-10" />
+                <User className="w-8 h-8 sm:w-10 sm:h-10" />
               )}
             </div>
-            <div>
-              <h3 className="text-2xl font-bold">
+            <div className="min-w-0 flex-1">
+              <h3 className="text-xl sm:text-2xl font-bold truncate">
                 {profile?.full_name || user.email}
               </h3>
               {profile?.full_name && (
-                <p className="text-white/70 text-sm">{user.email}</p>
+                <p className="text-white/70 text-sm truncate">{user.email}</p>
               )}
               {profile?.job_title && profile?.company && (
-                <p className="text-white/60 text-sm mt-1">
+                <p className="text-white/60 text-sm mt-1 truncate">
                   {profile.job_title} • {profile.company}
                 </p>
               )}
@@ -69,10 +69,10 @@ export const ProfileView = ({
 
           <button
             onClick={() => setShowEditModal(true)}
-            className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-all flex items-center gap-2 text-sm"
+            className="w-full sm:w-auto px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-all flex items-center justify-center gap-2 text-sm flex-shrink-0"
           >
             <Edit2 className="w-4 h-4" />
-            Editar Perfil
+            <span>Editar Perfil</span>
           </button>
         </div>
 
